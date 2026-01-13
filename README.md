@@ -1,4 +1,4 @@
-# Project AWRA v2 - Project Overview
+# Project AWRA - Project Overview
 
 **Automated Weather Report Analytics (AWRA)**
 
