@@ -1,0 +1,77 @@
+{
+  "pdfs": [
+    {
+      "name": "5day_pdf_ncr",
+      "url": "https://www.pagasa.dost.gov.ph/regional-forecast/ncrprsd",
+      "selector": "body > div.container-fluid.container-space > div.col-md-12.prsd-page > div > div:nth-child(1) > div > div:nth-child(3) > div.r-header > span:nth-child(1) > a",
+      "filename": "5day_ncr.pdf",
+      "category": "5-DAY NCR"
+    },
+    {
+      "name": "5DAY_PDF_DUMA",
+      "url": "https://www.pagasa.dost.gov.ph/regional-forecast/visprsd",
+      "selector": "#main-wrapper > div > section > div > div > div.col-md-9.content-panel > div > div:nth-child(1) > div > div:nth-child(3) > div.outlook-container > div > a",
+      "filename": "5day_duma.pdf",
+      "category": "5-DAY DUMAGUETE"
+    },
+    {
+      "name": "PUBLIC_FORECAST",
+      "url": "https://pubfiles.pagasa.dost.gov.ph/tamss/weather/pf.pdf",
+      "selector": null,
+      "filename": "public_forecast.pdf",
+      "category": "ATTACHMENT_ONLY"
+    }
+  ],
+  "text_sources": [
+    {
+      "name": "public_forecast_text",
+      "url": "https://www.pagasa.dost.gov.ph/weather",
+      "filename": "public_forecast.txt",
+      "category": "PAGASA PUBLIC FORECAST"
+    },
+    {
+      "name": "rainfall_dumaguete",
+      "url": "https://www.pagasa.dost.gov.ph/regional-forecast/visprsd",
+      "xpath": "//*[@id=\"rainfalls\"]",
+      "filename": "rainfall_dumaguete.txt",
+      "category": "RAINFALL DUMAGUETE"
+    },
+    {
+      "name": "rainfall_ncr",
+      "url": "https://www.pagasa.dost.gov.ph/regional-forecast/ncrprsd",
+      "xpath": "//*[@id=\"rainfalls\"]",
+      "filename": "rainfall_ncr.txt",
+      "category": "RAINFALL NCR"
+    },
+    {
+      "name": "thunderstorm_dumaguete",
+      "url": "https://www.pagasa.dost.gov.ph/regional-forecast/visprsd",
+      "xpath": "//*[@id=\"thunderstorms\"]",
+      "filename": "thunderstorm_dumaguete.txt",
+      "toggle_xpath": "/html/body/div[2]/div[1]/div/div[1]/div/div[4]/ul/li[2]/a",
+      "category": "THUNDERSTORM DUMAGUETE"
+    },
+    {
+      "name": "thunderstorm_ncr",
+      "url": "https://www.pagasa.dost.gov.ph/regional-forecast/ncrprsd",
+      "xpath": "//*[@id=\"thunderstorms\"]",
+      "filename": "thunderstorm_ncr.txt",
+      "toggle_xpath": "/html/body/div[2]/div[1]/div/div[1]/div/div[4]/ul/li[2]/a",
+      "category": "THUNDERSTORM NCR"
+    },
+    {
+      "name": "accuweather_dumaguete",
+      "url": "https://www.accuweather.com/en/ph/dumaguete-city/265052/weather-forecast/265052",
+      "selector": "body > div > div.two-column-page-content > div.page-column-1 > div.page-content.content-module > div.daily-list.content-module",
+      "filename": "accuweather_dumaguete.txt",
+      "category": "ACCUWEATHER DUMAGUETE"
+    },
+    {
+      "name": "accuweather_ncr",
+      "url": "https://www.accuweather.com/en/ph/makati-city/21-264878_1_al/weather-forecast/21-264878_1_al?city=makati",
+      "selector": "body > div > div.two-column-page-content > div.page-column-1 > div.page-content.content-module > div.daily-list.content-module",
+      "filename": "accuweather_ncr.txt",
+      "category": "ACCUWEATHER NCR"
+    }
+  ]
+}
