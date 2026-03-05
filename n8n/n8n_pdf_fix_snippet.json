@@ -1,0 +1,79 @@
+{
+    "nodes": [
+        {
+            "parameters": {
+                "url": "https://www.pagasa.dost.gov.ph/regional-forecast/ncrprsd",
+                "options": {}
+            },
+            "name": "Fetch NCR Page",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 3,
+            "position": [
+                400,
+                600
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "extractHtmlContent",
+                "dataPropertyName": "pdf_link",
+                "extractionValues": {
+                    "values": [
+                        {
+                            "key": "url",
+                            "cssSelector": ".prsd-page a[href$='.pdf']",
+                            "returnArray": false,
+                            "attribute": "href"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "name": "Get PDF Link",
+            "type": "n8n-nodes-base.htmlExtract",
+            "typeVersion": 1,
+            "position": [
+                600,
+                600
+            ]
+        },
+        {
+            "parameters": {
+                "url": "={{ $json.url }}",
+                "responseFormat": "file",
+                "options": {}
+            },
+            "name": "Download PDF",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 3,
+            "position": [
+                800,
+                600
+            ]
+        }
+    ],
+    "connections": {
+        "Fetch NCR Page": {
+            "main": [
+                [
+                    {
+                        "node": "Get PDF Link",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Get PDF Link": {
+            "main": [
+                [
+                    {
+                        "node": "Download PDF",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    }
+}

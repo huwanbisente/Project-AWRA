@@ -1,0 +1,200 @@
+{
+    "nodes": [
+        {
+            "parameters": {
+                "url": "https://www.pagasa.dost.gov.ph/regional-forecast/ncrprsd",
+                "options": {}
+            },
+            "name": "Fetch NCR Page",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 3,
+            "position": [
+                400,
+                500
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "extractHtmlContent",
+                "dataPropertyName": "pdf_link",
+                "extractionValues": {
+                    "values": [
+                        {
+                            "key": "url",
+                            "cssSelector": ".prsd-page a[href$='.pdf']",
+                            "returnArray": false,
+                            "attribute": "href"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "name": "Get NCR PDF Link",
+            "type": "n8n-nodes-base.htmlExtract",
+            "typeVersion": 1,
+            "position": [
+                600,
+                500
+            ]
+        },
+        {
+            "parameters": {
+                "url": "={{ $json.url }}",
+                "responseFormat": "file",
+                "options": {}
+            },
+            "name": "Download NCR PDF",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 3,
+            "position": [
+                800,
+                500
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "extractRawText",
+                "binaryPropertyName": "data"
+            },
+            "name": "Extract NCR PDF",
+            "type": "n8n-nodes-base.readPDF",
+            "typeVersion": 1,
+            "position": [
+                1000,
+                500
+            ]
+        },
+        {
+            "parameters": {
+                "url": "https://www.pagasa.dost.gov.ph/regional-forecast/visprsd",
+                "options": {}
+            },
+            "name": "Fetch Dumaguete Page",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 3,
+            "position": [
+                400,
+                700
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "extractHtmlContent",
+                "dataPropertyName": "pdf_link",
+                "extractionValues": {
+                    "values": [
+                        {
+                            "key": "url",
+                            "cssSelector": ".outlook-container a[href$='.pdf']",
+                            "returnArray": false,
+                            "attribute": "href"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "name": "Get Dumaguete PDF Link",
+            "type": "n8n-nodes-base.htmlExtract",
+            "typeVersion": 1,
+            "position": [
+                600,
+                700
+            ]
+        },
+        {
+            "parameters": {
+                "url": "={{ $json.url }}",
+                "responseFormat": "file",
+                "options": {}
+            },
+            "name": "Download Dumaguete PDF",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 3,
+            "position": [
+                800,
+                700
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "extractRawText",
+                "binaryPropertyName": "data"
+            },
+            "name": "Extract Dumaguete PDF",
+            "type": "n8n-nodes-base.readPDF",
+            "typeVersion": 1,
+            "position": [
+                1000,
+                700
+            ]
+        }
+    ],
+    "connections": {
+        "Fetch NCR Page": {
+            "main": [
+                [
+                    {
+                        "node": "Get NCR PDF Link",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Get NCR PDF Link": {
+            "main": [
+                [
+                    {
+                        "node": "Download NCR PDF",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Download NCR PDF": {
+            "main": [
+                [
+                    {
+                        "node": "Extract NCR PDF",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Fetch Dumaguete Page": {
+            "main": [
+                [
+                    {
+                        "node": "Get Dumaguete PDF Link",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Get Dumaguete PDF Link": {
+            "main": [
+                [
+                    {
+                        "node": "Download Dumaguete PDF",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Download Dumaguete PDF": {
+            "main": [
+                [
+                    {
+                        "node": "Extract Dumaguete PDF",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    }
+}

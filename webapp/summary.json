@@ -1,0 +1,217 @@
+{
+  "summary_of_current_conditions": {
+    "date": "February 04, 2026",
+    "system_in_effect": "Tropical Storm BASYANG (PENHA) and the Northeast Monsoon (Amihan).",
+    "metro_manila_detailed": "Valid until 09:00 AM 05 February 2026. Partly cloudy to cloudy skies with isolated light rains (Northeast Monsoon). Winds: Light to Moderate, East to Northeast. Coastal waters: Slight to Moderate (0.6 to 2.1 m). Temp: 20-31\u00b0C (NCR outlook).",
+    "dumaguete_detailed": "Valid until 05:00 AM 05 February 2026. Partly cloudy skies with low chance of rain. Winds: Northeast, 30\u201345 kph. Sea condition: Moderate to Rough (1.3 m to 2.8 m). Temp: 24\u201330\u00b0C; Heat Index: 34\u201336\u00b0C (Extreme Caution).",
+    "metro_manila_email": "For the next 24 hours, expect partly cloudy to cloudy skies with isolated light rains due to the Northeast Monsoon. Winds will be light to moderate with generally manageable marine conditions.",
+    "dumaguete_email": "For the next 24 hours, expect generally partly cloudy skies with a low chance of rain. Winds will be breezy at times and sea conditions may be moderate to rough; remain alert for possible thunderstorms in the broader Visayas as weather from Tropical Storm Basyang influences nearby areas."
+  },
+  "active_pagasa_advisories": {
+    "rainfall_warning": {
+      "metro_manila": {
+        "title": "No Heavy Rainfall Warning Issued",
+        "summary": "As of today, PAGASA has no Heavy Rainfall Warning for NCR."
+      },
+      "dumaguete": {
+        "title": "No Heavy Rainfall Warning Issued",
+        "summary": "As of today, PAGASA has no Heavy Rainfall Warning for Dumaguete/Negros Oriental."
+      }
+    },
+    "thunderstorm_warning": {
+      "metro_manila": {
+        "title": "Thunderstorm Information #NCR_PRSD (10:00 PM 04 Feb 2026)",
+        "summary": "Thunderstorm is LESS LIKELY over Greater Metro Manila Area (Metro Manila, Bulacan, Rizal, Laguna, Cavite) within 12 hours. Continue monitoring for updates."
+      },
+      "dumaguete": {
+        "title": "Thunderstorm Watch #VISPRSD (10:00 PM 04 Feb 2026)",
+        "summary": "Thunderstorm is MORE LIKELY over Negros Oriental (incl. Dumaguete) and multiple Visayas provinces within 12 hours. Continue monitoring for updates."
+      }
+    },
+    "other_advisories": [
+      {
+        "title": "PAGASA Daily Weather (Issued 4:00 AM, 05 Feb 2026) - Tropical Storm BASYANG",
+        "summary": "TS BASYANG is present east of Surigao del Sur and influencing parts of Visayas and Mindanao with rains and gusty winds; Metro Manila and the rest of Luzon affected by the Northeast Monsoon with isolated light rains."
+      }
+    ]
+  },
+  "forecast_10day": {
+    "accuweather": {
+      "metro_manila": [
+        {
+          "date_label": "Today",
+          "max_temp": 32,
+          "min_temp": 22,
+          "pop": 1,
+          "description": "Mostly sunny"
+        },
+        {
+          "date_label": "Fri",
+          "max_temp": 32,
+          "min_temp": 24,
+          "pop": 25,
+          "description": "Cloudy"
+        },
+        {
+          "date_label": "Sat",
+          "max_temp": 30,
+          "min_temp": 24,
+          "pop": 55,
+          "description": "Cloudy with a stray t-storm"
+        },
+        {
+          "date_label": "Sun",
+          "max_temp": 29,
+          "min_temp": 23,
+          "pop": 67,
+          "description": "A couple of morning showers"
+        },
+        {
+          "date_label": "Mon",
+          "max_temp": 29,
+          "min_temp": 23,
+          "pop": 49,
+          "description": "A morning shower; cloudy"
+        },
+        {
+          "date_label": "Tue",
+          "max_temp": 31,
+          "min_temp": 23,
+          "pop": 13,
+          "description": "Clouds and sun"
+        },
+        {
+          "date_label": "Wed",
+          "max_temp": 31,
+          "min_temp": 24,
+          "pop": 11,
+          "description": "Mostly cloudy"
+        },
+        {
+          "date_label": "Thu",
+          "max_temp": 31,
+          "min_temp": 24,
+          "pop": 2,
+          "description": "Partly sunny"
+        },
+        {
+          "date_label": "Fri",
+          "max_temp": 31,
+          "min_temp": 24,
+          "pop": 1,
+          "description": "Turning cloudy"
+        },
+        {
+          "date_label": "Sat",
+          "max_temp": 32,
+          "min_temp": 21,
+          "pop": 40,
+          "description": "A morning shower"
+        }
+      ],
+      "dumaguete": [
+        {
+          "date_label": "Today",
+          "max_temp": 28,
+          "min_temp": 24,
+          "pop": 96,
+          "description": "Rain and a thunderstorm"
+        },
+        {
+          "date_label": "Fri",
+          "max_temp": 27,
+          "min_temp": 25,
+          "pop": 100,
+          "description": "Afternoon thunderstorms"
+        },
+        {
+          "date_label": "Sat",
+          "max_temp": 31,
+          "min_temp": 24,
+          "pop": 90,
+          "description": "A couple of t-storms; warmer"
+        },
+        {
+          "date_label": "Sun",
+          "max_temp": 30,
+          "min_temp": 25,
+          "pop": 69,
+          "description": "Some rain and a thunderstorm"
+        },
+        {
+          "date_label": "Mon",
+          "max_temp": 30,
+          "min_temp": 24,
+          "pop": 67,
+          "description": "Some rain and a thunderstorm"
+        },
+        {
+          "date_label": "Tue",
+          "max_temp": 28,
+          "min_temp": 24,
+          "pop": 84,
+          "description": "Rain and a thunderstorm"
+        },
+        {
+          "date_label": "Wed",
+          "max_temp": 29,
+          "min_temp": 24,
+          "pop": 61,
+          "description": "Cloudy with a t-storm or two"
+        },
+        {
+          "date_label": "Thu",
+          "max_temp": 31,
+          "min_temp": 24,
+          "pop": 72,
+          "description": "Morning thunderstorms"
+        },
+        {
+          "date_label": "Fri",
+          "max_temp": 30,
+          "min_temp": 24,
+          "pop": 69,
+          "description": "Afternoon rain"
+        },
+        {
+          "date_label": "Sat",
+          "max_temp": 29,
+          "min_temp": 23,
+          "pop": 60,
+          "description": "Periods of rain"
+        }
+      ]
+    }
+  },
+  "site_impact_summary": {
+    "metro_manila": {
+      "impact_level": "Low",
+      "justification": "Amihan bringing isolated light rains with no heavy rainfall warning and thunderstorms assessed as less likely in the next 12 hours; winds generally light to moderate."
+    },
+    "dumaguete": {
+      "impact_level": "Moderate",
+      "justification": "Thunderstorms more likely within 12 hours for Negros Oriental; Dumaguete forecast indicates breezy conditions with moderate to rough seas and elevated heat index, while TS BASYANG increases regional rain/thunderstorm risk across Visayas."
+    }
+  },
+  "operational_status": {
+    "metro_manila": "Normal operations.",
+    "dumaguete": "Normal operations with enhanced weather monitoring."
+  },
+  "operational_recommendations": {
+    "metro_manila": [
+      "Continue routine monitoring for any changes in Amihan conditions and sudden localized showers that may affect commuting.",
+      "Remind staff of standard wet-weather precautions despite low thunderstorm likelihood."
+    ],
+    "dumaguete": [
+      "Activate closer monitoring for thunderstorm development over Negros Oriental within the next 12 hours; be ready for short-notice schedule/transport adjustments.",
+      "Advise facilities to prepare for brief power fluctuations and localized flooding during thunderstorms; verify backup power readiness.",
+      "Issue staff guidance on heat stress precautions (hydration and cool-down breaks), especially for employees commuting or performing outdoor tasks."
+    ]
+  },
+  "key_takeaways": [
+    "Tropical Storm BASYANG is active and influencing Visayas/Mindanao weather; Northeast Monsoon continues affecting Luzon including Metro Manila.",
+    "Metro Manila: isolated light rains with generally light to moderate winds; thunderstorms currently less likely within 12 hours.",
+    "Dumaguete/Negros Oriental: thunderstorms more likely within 12 hours with breezier conditions and moderate to rough seas; maintain heightened monitoring.",
+    "No PAGASA Heavy Rainfall Warnings are currently issued for either NCR or Dumaguete."
+  ]
+}

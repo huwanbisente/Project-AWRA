@@ -1,0 +1,638 @@
+{
+    "name": "Project AWRA - REPAIRED Production Workflow",
+    "nodes": [
+        {
+            "parameters": {
+                "path": "weather-report",
+                "responseMode": "lastNode",
+                "options": {}
+            },
+            "name": "Webhook",
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 1,
+            "position": [
+                100,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "url": "https://www.pagasa.dost.gov.ph/weather",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "User-Agent",
+                            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "name": "Fetch PAGASA HTML",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 3,
+            "position": [
+                300,
+                100
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "extractHtmlContent",
+                "dataPropertyName": "data",
+                "extractionValues": {
+                    "values": [
+                        {
+                            "key": "text",
+                            "cssSelector": "body",
+                            "returnArray": false
+                        }
+                    ]
+                }
+            },
+            "name": "Extract PAGASA Text",
+            "type": "n8n-nodes-base.htmlExtract",
+            "typeVersion": 1,
+            "position": [
+                500,
+                100
+            ]
+        },
+        {
+            "parameters": {
+                "url": "https://www.accuweather.com/en/ph/manila/264885/daily-weather-forecast/264885",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "User-Agent",
+                            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+                        },
+                        {
+                            "name": "Accept",
+                            "value": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8"
+                        },
+                        {
+                            "name": "Accept-Language",
+                            "value": "en-US,en;q=0.5"
+                        }
+                    ]
+                },
+                "options": {
+                    "timeout": 10000,
+                    "followRedirects": true
+                }
+            },
+            "name": "Scrape AccuWeather Manila",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 3,
+            "position": [
+                300,
+                300
+            ],
+            "onError": "continueErrorOutput"
+        },
+        {
+            "parameters": {
+                "operation": "extractHtmlContent",
+                "dataPropertyName": "data",
+                "extractionValues": {
+                    "values": [
+                        {
+                            "key": "text",
+                            "cssSelector": ".daily-list, .daily-wrapper",
+                            "returnArray": false
+                        },
+                        {
+                            "key": "fallback_text",
+                            "cssSelector": "body",
+                            "returnArray": false
+                        }
+                    ]
+                }
+            },
+            "name": "Extract AccuWeather Manila",
+            "type": "n8n-nodes-base.htmlExtract",
+            "typeVersion": 1,
+            "position": [
+                500,
+                300
+            ],
+            "onError": "continueErrorOutput"
+        },
+        {
+            "parameters": {
+                "url": "https://www.accuweather.com/en/ph/dumaguete-city/265052/weather-forecast/265052",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "User-Agent",
+                            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+                        },
+                        {
+                            "name": "Accept",
+                            "value": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8"
+                        },
+                        {
+                            "name": "Accept-Language",
+                            "value": "en-US,en;q=0.5"
+                        }
+                    ]
+                },
+                "options": {
+                    "timeout": 10000,
+                    "followRedirects": true
+                }
+            },
+            "name": "Scrape AccuWeather Dumaguete",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 3,
+            "position": [
+                300,
+                450
+            ],
+            "onError": "continueErrorOutput"
+        },
+        {
+            "parameters": {
+                "operation": "extractHtmlContent",
+                "dataPropertyName": "data",
+                "extractionValues": {
+                    "values": [
+                        {
+                            "key": "text",
+                            "cssSelector": ".daily-list, .daily-wrapper",
+                            "returnArray": false
+                        },
+                        {
+                            "key": "fallback_text",
+                            "cssSelector": "body",
+                            "returnArray": false
+                        }
+                    ]
+                }
+            },
+            "name": "Extract AccuWeather Dumaguete",
+            "type": "n8n-nodes-base.htmlExtract",
+            "typeVersion": 1,
+            "position": [
+                500,
+                450
+            ],
+            "onError": "continueErrorOutput"
+        },
+        {
+            "parameters": {
+                "url": "https://www.pagasa.dost.gov.ph/regional-forecast/ncrprsd",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "User-Agent",
+                            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "name": "Fetch NCR Page",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 3,
+            "position": [
+                300,
+                600
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "extractHtmlContent",
+                "dataPropertyName": "data",
+                "extractionValues": {
+                    "values": [
+                        {
+                            "key": "pdf_link",
+                            "cssSelector": "a[href*='gmma_forecast.pdf']",
+                            "returnArray": false,
+                            "attribute": "href"
+                        },
+                        {
+                            "key": "rainfall",
+                            "cssSelector": "#rainfalls",
+                            "returnArray": false
+                        },
+                        {
+                            "key": "thunderstorm",
+                            "cssSelector": "#thunderstorms",
+                            "returnArray": false
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "name": "Extract NCR Page Data",
+            "type": "n8n-nodes-base.htmlExtract",
+            "typeVersion": 1,
+            "position": [
+                500,
+                600
+            ]
+        },
+        {
+            "parameters": {
+                "url": "={{ $json.data.pdf_link }}",
+                "responseFormat": "file",
+                "options": {}
+            },
+            "name": "Download NCR PDF",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 3,
+            "position": [
+                700,
+                600
+            ],
+            "onError": "continueErrorOutput"
+        },
+        {
+            "parameters": {
+                "operation": "extractRawText",
+                "binaryPropertyName": "data"
+            },
+            "name": "Extract NCR PDF",
+            "type": "n8n-nodes-base.readPDF",
+            "typeVersion": 1,
+            "position": [
+                900,
+                600
+            ],
+            "onError": "continueErrorOutput"
+        },
+        {
+            "parameters": {
+                "url": "https://www.pagasa.dost.gov.ph/regional-forecast/visprsd",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "User-Agent",
+                            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "name": "Fetch Dumaguete Page",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 3,
+            "position": [
+                300,
+                800
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "extractHtmlContent",
+                "dataPropertyName": "data",
+                "extractionValues": {
+                    "values": [
+                        {
+                            "key": "pdf_link",
+                            "cssSelector": "a[href$='.pdf']",
+                            "returnArray": false,
+                            "attribute": "href"
+                        },
+                        {
+                            "key": "rainfall",
+                            "cssSelector": "#rainfalls",
+                            "returnArray": false
+                        },
+                        {
+                            "key": "thunderstorm",
+                            "cssSelector": "#thunderstorms",
+                            "returnArray": false
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "name": "Extract Dumaguete Page Data",
+            "type": "n8n-nodes-base.htmlExtract",
+            "typeVersion": 1,
+            "position": [
+                500,
+                800
+            ]
+        },
+        {
+            "parameters": {
+                "url": "={{ $json.data.pdf_link }}",
+                "responseFormat": "file",
+                "options": {}
+            },
+            "name": "Download Dumaguete PDF",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 3,
+            "position": [
+                700,
+                800
+            ],
+            "onError": "continueErrorOutput"
+        },
+        {
+            "parameters": {
+                "operation": "extractRawText",
+                "binaryPropertyName": "data"
+            },
+            "name": "Extract Dumaguete PDF",
+            "type": "n8n-nodes-base.readPDF",
+            "typeVersion": 1,
+            "position": [
+                900,
+                800
+            ],
+            "onError": "continueErrorOutput"
+        },
+        {
+            "parameters": {
+                "jsCode": "// ------------------------------------------------------------------\n// PART 1: PARSE PAGASA TEXT (From HTML Extract Node)\n// ------------------------------------------------------------------\n// Input: items[0].json.data (extracted text from body)\nconst rawText = items[0].json.data || \"\";\n\nconst cleanedText = rawText\n  .replace(\"Skip to main content\", \"\")\n  .replace(\"Toggle navigation\", \"\")\n  .trim();\n\n// ------------------------------------------------------------------\n// PART 3: AGGREGATE & PREPARE PROMPT (Master Aggregator)\n// ------------------------------------------------------------------\nlet pagasaText = \"No PAGASA data available.\";\nlet accuManila = \"No AccuWeather Manila data.\";\nlet accuDuma = \"No AccuWeather Dumaguete data.\";\nlet pdfText = \"No PDF data available.\";\nlet ncrWarnings = \"\";\nlet dumaWarnings = \"\";\n\n// 1. PAGASA TEXT\ntry {\n  const pagasaNode = $('Extract PAGASA Text').first();\n  if (pagasaNode && pagasaNode.json) {\n    pagasaText = pagasaNode.json.data || \"\";\n  }\n} catch (e) {}\n\n// 2. NCR DATA (PDF + Warnings)\nlet ncrPdfText = \"\";\ntry {\n    const pdfNode = $('Extract NCR PDF').first();\n    if (pdfNode && pdfNode.json) ncrPdfText = pdfNode.json.text || \"\";\n} catch (e) {}\n\ntry {\n    // We extracted these in 'Extract NCR Page Data'\n    const pageNode = $('Extract NCR Page Data').first();\n    if (pageNode && pageNode.json) {\n        let r = pageNode.json.rainfall || \"No Rainfall Warning\";\n        let t = pageNode.json.thunderstorm || \"No Thunderstorm Warning\";\n        ncrWarnings = `RAIN: ${r}\\nTHUNDER: ${t}`;\n    }\n} catch (e) {}\n\n// 3. DUMAGUETE DATA (PDF + Warnings)\nlet dumaPdfText = \"\";\ntry {\n    const pdfNode = $('Extract Dumaguete PDF').first();\n    if (pdfNode && pdfNode.json) dumaPdfText = pdfNode.json.text || \"\";\n} catch (e) {}\n\ntry {\n    const pageNode = $('Extract Dumaguete Page Data').first();\n    if (pageNode && pageNode.json) {\n        let r = pageNode.json.rainfall || \"No Rainfall Warning\";\n        let t = pageNode.json.thunderstorm || \"No Thunderstorm Warning\";\n        dumaWarnings = `RAIN: ${r}\\nTHUNDER: ${t}`;\n    }\n} catch (e) {}\n\n// 4. ACCUWEATHER\n// UPDATED: Now reading from 'Extract AccuWeather...' nodes, not 'Scrape...' nodes\ntry {\n  const node = $('Extract AccuWeather Manila').first();\n  if (node && node.json) {\n    // Try specific selector first, then fallback\n    let text = node.json.text || node.json.fallback_text || \"\";\n    accuManila = text.substring(0, 10000);\n  }\n} catch (e) {}\n\ntry {\n  const node = $('Extract AccuWeather Dumaguete').first();\n  if (node && node.json) {\n      let text = node.json.text || node.json.fallback_text || \"\";\n      accuDuma = text.substring(0, 10000);\n  }\n} catch (e) {}\n\n\nconst sourceText = `\n[PAGASA PUBLIC FORECAST]\n${pagasaText.substring(0, 8000)}\n\n[NCR REGIONAL (Metro Manila)]\nWarnings:\n${ncrWarnings}\nPDF Outlook:\n${ncrPdfText.substring(0, 5000)}\n\n[VISAYAS REGIONAL (Dumaguete)]\nWarnings:\n${dumaWarnings}\nPDF Outlook:\n${dumaPdfText.substring(0, 5000)}\n\n[ACCUWEATHER MANILA]\n${accuManila}\n\n[ACCUWEATHER DUMAGUETE]\n${accuDuma}\n`;\n\nconst today = new Date().toLocaleDateString(\"en-US\", { year: 'numeric', month: 'long', day: 'numeric' });\n\nconst jsonStructure = `{\n  \"summary_of_current_conditions\": {\n    \"date\": \"${today}\",\n    \"system_in_effect\": \"\",\n    \"metro_manila_detailed\": \"\",\n    \"dumaguete_detailed\": \"\",\n    \"metro_manila_email\": \"\",\n    \"dumaguete_email\": \"\"\n  },\n  \"active_pagasa_advisories\": {\n    \"rainfall_warning\": {\n      \"metro_manila\": { \"title\": \"\", \"summary\": \"\" },\n      \"dumaguete\": { \"title\": \"\", \"summary\": \"\" }\n    },\n    \"thunderstorm_warning\": {\n      \"metro_manila\": { \"title\": \"\", \"summary\": \"\" },\n      \"dumaguete\": { \"title\": \"\", \"summary\": \"\" }\n    },\n    \"other_advisories\": [] \n  },\n  \"forecast_10day\": {\n    \"accuweather\": {\n      \"metro_manila\": [],\n      \"dumaguete\": []\n    }\n  },\n  \"site_impact_summary\": {\n    \"metro_manila\": { \"impact_level\": \"\", \"justification\": \"\" },\n    \"dumaguete\": { \"impact_level\": \"\", \"justification\": \"\" }\n  },\n  \"operational_status\": {\n    \"metro_manila\": \"\",\n    \"dumaguete\": \"\"\n  },\n  \"operational_recommendations\": {\n    \"metro_manila\": [],\n    \"dumaguete\": []\n  },\n  \"key_takeaways\": []\n}`;\n\nreturn [{\n  json: {\n    system_prompt: `You are generating a DAILY OPERATIONAL WEATHER SUMMARY.\\nOUTPUT MUST MATCH THIS JSON STRUCTURE EXACTLY.\\n${jsonStructure}\\n\\nIMPORTANT:\\n1. RETURN RAW JSON ONLY. NO MARKDOWN. NO CODE BLOCKS.\\n2. Use [PAGASA PUBLIC FORECAST] and [REGIONAL] sections for official data.\\n3. Check [NCR REGIONAL] and [VISAYAS REGIONAL] for Rainfall/Thunderstorm warnings.\\n4. Use [ACCUWEATHER] sources for the 10-day forecast table only.\\n`,\n    user_message: sourceText\n  }\n}];"
+            },
+            "name": "Aggregator & Prompt Prep",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 1,
+            "position": [
+                1100,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "resource": "chat",
+                "modelId": "gpt-4",
+                "messages": {
+                    "values": [
+                        {
+                            "role": "system",
+                            "content": "={{ $json.system_prompt }}"
+                        },
+                        {
+                            "role": "user",
+                            "content": "={{ $json.user_message }}"
+                        }
+                    ]
+                }
+            },
+            "name": "OpenAI Analysis",
+            "type": "n8n-nodes-base.openAi",
+            "typeVersion": 1,
+            "position": [
+                1300,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "// Sanitize input: remove markdown code blocks if present\nconst content = $json.message.content;\nconst clean = content.replace(/^```json\\s*/, '').replace(/```$/, '').trim();\nreturn { json: JSON.parse(clean) };"
+            },
+            "name": "Parse JSON",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 1,
+            "position": [
+                1500,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "options": {}
+            },
+            "name": "Respond to Webhook",
+            "type": "n8n-nodes-base.respondToWebhook",
+            "typeVersion": 1,
+            "position": [
+                1700,
+                300
+            ]
+        }
+    ],
+    "connections": {
+        "Webhook": {
+            "main": [
+                [
+                    {
+                        "node": "Fetch PAGASA HTML",
+                        "type": "main",
+                        "index": 0
+                    },
+                    {
+                        "node": "Scrape AccuWeather Manila",
+                        "type": "main",
+                        "index": 0
+                    },
+                    {
+                        "node": "Scrape AccuWeather Dumaguete",
+                        "type": "main",
+                        "index": 0
+                    },
+                    {
+                        "node": "Fetch NCR Page",
+                        "type": "main",
+                        "index": 0
+                    },
+                    {
+                        "node": "Fetch Dumaguete Page",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Fetch PAGASA HTML": {
+            "main": [
+                [
+                    {
+                        "node": "Extract PAGASA Text",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Extract PAGASA Text": {
+            "main": [
+                [
+                    {
+                        "node": "Aggregator & Prompt Prep",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Scrape AccuWeather Manila": {
+            "main": [
+                [
+                    {
+                        "node": "Extract AccuWeather Manila",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Extract AccuWeather Manila": {
+            "main": [
+                [
+                    {
+                        "node": "Aggregator & Prompt Prep",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Scrape AccuWeather Dumaguete": {
+            "main": [
+                [
+                    {
+                        "node": "Extract AccuWeather Dumaguete",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Extract AccuWeather Dumaguete": {
+            "main": [
+                [
+                    {
+                        "node": "Aggregator & Prompt Prep",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Fetch NCR Page": {
+            "main": [
+                [
+                    {
+                        "node": "Extract NCR Page Data",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Extract NCR Page Data": {
+            "main": [
+                [
+                    {
+                        "node": "Download NCR PDF",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Download NCR PDF": {
+            "main": [
+                [
+                    {
+                        "node": "Extract NCR PDF",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Extract NCR PDF": {
+            "main": [
+                [
+                    {
+                        "node": "Aggregator & Prompt Prep",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Fetch Dumaguete Page": {
+            "main": [
+                [
+                    {
+                        "node": "Extract Dumaguete Page Data",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Extract Dumaguete Page Data": {
+            "main": [
+                [
+                    {
+                        "node": "Download Dumaguete PDF",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Download Dumaguete PDF": {
+            "main": [
+                [
+                    {
+                        "node": "Extract Dumaguete PDF",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Extract Dumaguete PDF": {
+            "main": [
+                [
+                    {
+                        "node": "Aggregator & Prompt Prep",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Aggregator & Prompt Prep": {
+            "main": [
+                [
+                    {
+                        "node": "OpenAI Analysis",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "OpenAI Analysis": {
+            "main": [
+                [
+                    {
+                        "node": "Parse JSON",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Parse JSON": {
+            "main": [
+                [
+                    {
+                        "node": "Respond to Webhook",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    }
+}

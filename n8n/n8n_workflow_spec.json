@@ -1,0 +1,227 @@
+{
+    "name": "Project AWRA - Native n8n Pipeline",
+    "nodes": [
+        {
+            "parameters": {
+                "path": "weather-report",
+                "responseMode": "lastNode",
+                "options": {}
+            },
+            "name": "Webhook",
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 1,
+            "position": [
+                100,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "url": "https://www.pagasa.dost.gov.ph/weather",
+                "operation": "getPageContent",
+                "options": {
+                    "waitUntil": "domcontentloaded",
+                    "timeout": 30000,
+                    "stealth": true
+                }
+            },
+            "name": "Scrape PAGASA",
+            "type": "n8n-nodes-puppeteer.puppeteer",
+            "typeVersion": 1,
+            "position": [
+                300,
+                100
+            ]
+        },
+        {
+            "parameters": {
+                "url": "https://www.accuweather.com/en/ph/manila/264885/daily-weather-forecast/264885",
+                "options": {}
+            },
+            "name": "Scrape AccuWeather",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 3,
+            "position": [
+                300,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "url": "=https://pubfiles.pagasa.dost.gov.ph/pagasaweb/files/weather/5-day-outlook/Metro_Manila.pdf",
+                "responseFormat": "file",
+                "options": {}
+            },
+            "name": "Download PDF",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 3,
+            "position": [
+                300,
+                500
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "extractRawText",
+                "binaryPropertyName": "data"
+            },
+            "name": "Extract PDF Text",
+            "type": "n8n-nodes-base.readPDF",
+            "typeVersion": 1,
+            "position": [
+                500,
+                500
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "// (Paste content from PART 3 of n8n_javascript_parsers.js here)"
+            },
+            "name": "Aggregator & Prompt Prep",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 1,
+            "position": [
+                700,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "modelId": "gpt-4",
+                "prompt": "={{ $json.user_message }}",
+                "systemMessage": "={{ $json.system_prompt }}"
+            },
+            "name": "OpenAI Analysis",
+            "type": "n8n-nodes-base.openAi",
+            "typeVersion": 1,
+            "position": [
+                900,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "return { json: JSON.parse($json.message.content) };"
+            },
+            "name": "Parse JSON",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 1,
+            "position": [
+                1100,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "options": {}
+            },
+            "name": "Respond to Webhook",
+            "type": "n8n-nodes-base.respondToWebhook",
+            "typeVersion": 1,
+            "position": [
+                1300,
+                300
+            ]
+        }
+    ],
+    "connections": {
+        "Webhook": {
+            "main": [
+                [
+                    {
+                        "node": "Scrape PAGASA",
+                        "type": "main",
+                        "index": 0
+                    },
+                    {
+                        "node": "Scrape AccuWeather",
+                        "type": "main",
+                        "index": 0
+                    },
+                    {
+                        "node": "Download PDF",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Scrape PAGASA": {
+            "main": [
+                [
+                    {
+                        "node": "Aggregator & Prompt Prep",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Scrape AccuWeather": {
+            "main": [
+                [
+                    {
+                        "node": "Aggregator & Prompt Prep",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Download PDF": {
+            "main": [
+                [
+                    {
+                        "node": "Extract PDF Text",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Extract PDF Text": {
+            "main": [
+                [
+                    {
+                        "node": "Aggregator & Prompt Prep",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Aggregator & Prompt Prep": {
+            "main": [
+                [
+                    {
+                        "node": "OpenAI Analysis",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "OpenAI Analysis": {
+            "main": [
+                [
+                    {
+                        "node": "Parse JSON",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Parse JSON": {
+            "main": [
+                [
+                    {
+                        "node": "Respond to Webhook",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    }
+}

@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remedy | Risk Radar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: { slate: { 50: '#f8fafc', 100: '#f1f5f9', 800: '#1e293b', 900: '#0f172a' } }
+                }
+            }
+        }
+    </script>
+    <style>
+        .animate-spin-slow {
+            animation: spin 12s steps(60) infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 h-screen w-full flex flex-col items-center overflow-hidden font-sans">
+
+    <div class="w-full max-w-[1920px] h-full flex flex-col p-4 gap-4">
+
+        <!-- [TOPBAR] -->
+        <header
+            class="flex justify-between items-center bg-white rounded-2xl px-8 py-4 shadow-sm border border-slate-200 shrink-0">
+            <div class="flex items-center gap-6">
+                <!-- Remedy Logo Placeholder -->
+                <div
+                    class="h-10 w-10 bg-black rounded-lg flex items-center justify-center text-white font-black text-2xl border border-slate-800 shadow-inner">
+                    <span
+                        class="border-2 border-white rounded-full w-7 h-7 flex items-center justify-center text-sm">R</span>
+                </div>
+                <div class="h-6 w-px bg-slate-200"></div>
+                <div class="flex flex-col">
+                    <h1 class="font-black text-slate-900 text-xl leading-none uppercase tracking-tighter italic">REMEDY
+                        <span class="text-blue-600">DASHBOARD</span>
+                    </h1>
+                    <p class="text-[9px] text-slate-400 font-bold tracking-[0.2em] uppercase mt-1">Strategic Operations
+                        & Risk Management</p>
+                </div>
+                <div class="h-10 w-px bg-slate-200 mx-2"></div>
+                <div class="flex flex-col justify-center">
+                    <span id="last-updated"
+                        class="text-[11px] font-black text-slate-500 uppercase tracking-tight">Syncing Live
+                        Data...</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-6">
+                <!-- Unified Intelligence Bar -->
+                <div class="flex items-center bg-slate-50 rounded-full border border-slate-200 shadow-sm p-1 pr-5">
+                    <div
+                        class="bg-white border border-slate-100 rounded-full px-4 py-1.5 flex items-center gap-2 shadow-sm shrink-0">
+                        <span class="relative flex h-2 w-2">
+                            <span
+                                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                        </span>
+                        <span class="text-[9px] font-black text-slate-700 uppercase tracking-widest">Active
+                            Monitoring</span>
+                    </div>
+                    <span class="mx-3 h-4 w-px bg-slate-200"></span>
+                    <i class="fa-solid fa-satellite-dish text-blue-500 text-[10px] animate-pulse mr-2"></i>
+                    <span
+                        class="text-[10px] font-bold text-blue-900 uppercase tracking-tight line-clamp-1 max-w-[250px]"
+                        id="ticker-text">Initializing Feed...</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- [MAIN DASHBOARD GRID] -->
+        <main class="flex-1 grid grid-cols-4 gap-6 min-h-0">
+
+            <!-- COLUMN 1 & 2: PRIMARY VISUALS -->
+            <div class="col-span-2 flex flex-col gap-6 overflow-hidden">
+                <!-- Live Map -->
+                <div
+                    class="flex-[3.5] bg-slate-900 rounded-2xl border border-slate-200 overflow-hidden relative shadow-md">
+                    <div class="absolute top-5 left-7 z-10 pointer-events-none drop-shadow-2xl">
+                        <h3 class="text-white font-black text-base tracking-widest uppercase flex items-center gap-3">
+                            <i class="fa-solid fa-earth-americas text-emerald-400"></i> Global Risk Radar
+                        </h3>
+                    </div>
+                    <div
+                        class="absolute top-5 right-7 z-10 bg-red-600 text-white text-[10px] font-black px-4 py-1.5 rounded-lg shadow-xl animate-pulse">
+                        LIVE DATA
+                    </div>
+                    <iframe width="100%" height="100%"
+                        src="https://embed.windy.com/embed2.html?lat=12.8&lon=122.0&detailLat=12.8&detailLon=122.0&width=650&height=450&zoom=5&level=surface&overlay=satellite&product=satellite&menu=&message=&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=default&metricTemp=default&radarRange=-1"
+                        frameborder="0" class="contrast-125 brightness-110 saturate-[1.1]"></iframe>
+                </div>
+
+                <!-- 10-Day Forecast -->
+                <div
+                    class="flex-[2] bg-white rounded-2xl border border-slate-200 overflow-hidden flex flex-col shadow-sm">
+                    <div
+                        class="px-8 py-5 border-b border-slate-50 bg-slate-50/50 flex justify-between items-center shrink-0">
+                        <span
+                            class="text-xs font-black uppercase tracking-[0.15em] text-slate-800 flex items-center gap-3"><i
+                                class="fa-solid fa-chart-line text-blue-600"></i> Localized 10-Day Projection</span>
+                        <!-- Custom Toggle -->
+                        <div class="bg-slate-100 rounded-lg p-1 flex relative w-48 h-9">
+                            <div class="absolute top-1 bottom-1 bg-white rounded shadow-sm transition-all duration-300 ease-out"
+                                id="forecast-slider-bg" style="width: 48%; left: 4px;"></div>
+                            <button onclick="renderForecast('Manila')"
+                                class="flex-1 text-[9px] font-black uppercase z-10 relative text-blue-700 transition"
+                                id="tab-mnl">Manila</button>
+                            <button onclick="renderForecast('Dumaguete')"
+                                class="flex-1 text-[9px] font-black uppercase z-10 relative text-slate-400 hover:text-slate-600 transition"
+                                id="tab-dgt">Dumaguete</button>
+                        </div>
+                    </div>
+                    <div class="flex-1 overflow-x-auto hide-scrollbar flex items-center px-8 gap-4"
+                        id="forecast-container">
+                        <!-- Card Inject -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- COLUMN 3: MIDDLE UTILITIES -->
+            <div class="col-span-1 flex flex-col gap-6 overflow-hidden">
+                <!-- Typhoon Monitor -->
+                <div
+                    class="bg-white rounded-2xl border border-slate-200 flex flex-col p-4 shadow-sm shrink-0 overflow-hidden relative min-h-[90px]">
+                    <div class="flex justify-between items-center mb-4 shrink-0">
+                        <h3
+                            class="text-xs font-black uppercase tracking-[0.15em] text-slate-800 flex items-center gap-2">
+                            <i id="typhoon-card-icon" class="fa-solid fa-hurricane text-slate-400"></i>
+                            <span id="typhoon-card-title">Risk Monitoring</span>
+                        </h3>
+                    </div>
+                    <div class="flex items-center gap-4 z-10 flex-1">
+                        <div class="relative w-12 h-12 shrink-0">
+                            <img src="assets/typhoon_satellite.png"
+                                class="w-full h-full object-cover rounded-full animate-spin-slow ring-1 ring-slate-100 shadow-sm"
+                                alt="Typhoon">
+                        </div>
+                        <div class="flex flex-col min-w-0 flex-1">
+                            <p class="text-[11px] font-bold text-slate-800 leading-tight" id="typhoon-text">Thinking...
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Summary Text -->
+                <div
+                    class="flex-1 bg-white rounded-2xl border border-slate-200 flex flex-col p-6 shadow-sm overflow-hidden min-h-0">
+                    <h3
+                        class="text-xs font-black uppercase tracking-[0.15em] text-slate-800 mb-4 shrink-0 flex items-center gap-2">
+                        <i class="fa-solid fa-file-waveform text-blue-500"></i> Executive Brief
+                    </h3>
+                    <div
+                        class="bg-slate-50 rounded-xl p-5 flex-1 overflow-y-auto hide-scrollbar border border-slate-100/50">
+                        <p class="text-[11px] font-medium text-slate-600 leading-relaxed text-justify"
+                            id="summary-text">
+                            Initializing executive summary...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COLUMN 4: OPERATIONS -->
+            <div class="col-span-1 flex flex-col gap-6 overflow-hidden">
+                <!-- Operational Recommendations -->
+                <div
+                    class="flex-[2.5] bg-white rounded-2xl border border-slate-200 shadow-sm flex flex-col overflow-hidden text-left">
+                    <div class="px-6 py-4 border-b border-slate-50 bg-white items-center shrink-0 min-h-[50px]">
+                        <h3
+                            class="text-xs font-black uppercase tracking-[0.15em] text-slate-800 flex items-center gap-3">
+                            <i class="fa-solid fa-briefcase text-slate-400"></i> Key Takeaways
+                        </h3>
+                    </div>
+                    <div class="flex-1 overflow-y-auto p-6 hide-scrollbar">
+                        <ul class="space-y-4" id="takeaways-list">
+                            <!-- Bullet Points -->
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Footer / Action -->
+                <div class="bg-slate-900 rounded-2xl border border-slate-800 p-6 shadow-sm shrink-0">
+                    <h3 class="text-white font-black text-xs uppercase tracking-widest mb-2"><i
+                            class="fa-solid fa-rocket text-blue-500 mr-2"></i>Deployment Ready</h3>
+                    <p class="text-[10px] text-slate-400 mb-4">View the comprehensive strategy report.</p>
+                    <a href="https://drive.google.com/file/d/1LNKhLvKqmwicopdNME0vfQns9aRQy4Sn/view?usp=sharing"
+                        target="_blank"
+                        class="block w-full text-center bg-blue-600 hover:bg-blue-500 text-white py-2.5 rounded-lg text-xs font-black uppercase tracking-wider transition">
+                        Open Strategy Report
+                    </a>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- LOGIC -->
+    <script>
+        let globalData = null;
+
+        function wIcon(cond) {
+            cond = (cond || "").toLowerCase();
+            if (cond.includes("rain") || cond.includes("shower")) return "fa-cloud-showers-heavy text-blue-500";
+            if (cond.includes("thunder") || cond.includes("storm")) return "fa-bolt-lightning text-amber-500";
+            if (cond.includes("cloud")) return "fa-cloud-sun text-slate-400";
+            return "fa-sun text-yellow-500";
+        }
+
+        function renderForecast(site) {
+            if (!globalData?.forecast_10day?.accuweather) return;
+            const container = document.getElementById('forecast-container');
+            const data = site === 'Manila' ? globalData.forecast_10day.accuweather.metro_manila : globalData.forecast_10day.accuweather.dumaguete;
+
+            const bg = document.getElementById('forecast-slider-bg');
+            bg.style.left = site === 'Manila' ? '4px' : '50%';
+
+            container.innerHTML = data.map(day => `
+                <div class="min-w-[100px] bg-white rounded-xl p-4 border border-slate-100 shadow-sm flex flex-col items-center gap-2">
+                    <span class="text-[10px] font-black text-slate-400 uppercase">${day.date_label || day.day}</span>
+                    <i class="fa-solid ${wIcon(day.description)} text-xl my-2"></i>
+                    <div class="text-[11px] font-black text-slate-900">${(day.max_temp && day.max_temp !== 0) ? day.max_temp : "--"}° / ${day.min_temp}°</div>
+                    <div class="text-[9px] font-bold text-blue-500"><i class="fa-solid fa-droplet text-[8px]"></i> ${day.pop}%</div>
+                </div>
+            `).join('');
+        }
+
+        function highLightStorm(txt) {
+            if (!txt) return "";
+            const keywords = ["Tropical Depression", "Tropical Storm", "Severe Tropical Storm", "Typhoon", "Super Typhoon", "Cyclone"];
+            let formatted = txt;
+            keywords.forEach(word => {
+                const regex = new RegExp(word, 'gi');
+                formatted = formatted.replace(regex, (match) => `<span class="text-red-600 font-black">${match}</span>`);
+            });
+            formatted = formatted.replace(/\(([^)]+)\)/g, '<span class="text-red-600 font-black">($1)</span>');
+            return formatted;
+        }
+
+        function init() {
+            // Check if running in GAS
+            if (typeof google === 'undefined') {
+                console.warn("GAS Environment not detected. Local fetch...");
+                // FALLBACK: Local Fetch for testing outside GAS
+                fetch('summary.json')
+                    .then(res => res.json())
+                    .then(data => {
+                        processData(data);
+                    })
+                    .catch(e => console.error("Local Fetch Error", e));
+                return;
+            }
+
+            google.script.run
+                .withSuccessHandler(function (data) {
+                    if (typeof data === 'string') data = JSON.parse(data);
+                    processData(data);
+                })
+                .getData();
+        }
+
+        function processData(data) {
+            try {
+                globalData = data;
+
+                document.getElementById('last-updated').innerText = `LIVE SYNC: ${data.summary_of_current_conditions.date}`;
+                document.getElementById('ticker-text').innerText = data.summary_of_current_conditions.system_in_effect || "SYSTEMS OPTIMAL - NO ACTIVE THREATS";
+
+                document.getElementById('summary-text').innerText = data.summary_of_current_conditions.metro_manila_email;
+
+                const monTxt = document.getElementById('typhoon-text');
+                const cardTitle = document.getElementById('typhoon-card-title');
+                const cardIcon = document.getElementById('typhoon-card-icon');
+
+                const sysEffect = (data.summary_of_current_conditions?.system_in_effect || "").toLowerCase();
+                const isActive = sysEffect.includes("storm") || sysEffect.includes("typhoon") || sysEffect.includes("cyclone");
+
+                if (isActive) {
+                    monTxt.innerHTML = highLightStorm(data.summary_of_current_conditions.system_in_effect);
+                    monTxt.className = "text-[11px] font-bold text-slate-800 leading-tight";
+                    cardTitle.innerText = "ACTIVE RISK";
+                    cardIcon.className = "fa-solid fa-hurricane text-red-600 animate-pulse";
+                } else {
+                    monTxt.innerText = "No immediate threats detected.";
+                }
+
+                document.getElementById('takeaways-list').innerHTML = data.key_takeaways.map(t => `
+                    <li class="flex items-start gap-4">
+                        <div class="h-5 w-5 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 shrink-0 mt-0.5"><i class="fa-solid fa-check text-[10px]"></i></div>
+                        <p class="text-[11px] font-medium text-slate-600 leading-relaxed">${t}</p>
+                    </li>
+                `).join('');
+
+                renderForecast('Manila');
+            } catch (e) { console.error("Parse Error", e); }
+        }
+
+        init();
+    </script>
+</body>
+
+</html>

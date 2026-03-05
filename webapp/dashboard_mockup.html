@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project AWRA | Operations Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: { slate: { 50: '#f8fafc', 100: '#f1f5f9', 800: '#1e293b', 900: '#0f172a' } }
+                }
+            }
+        }
+    </script>
+    <style>
+        .animate-spin-slow {
+            animation: spin 12s steps(60) infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Slider Toggle Style */
+        .slider-container {
+            @apply bg-slate-100 rounded-lg p-1 flex relative;
+        }
+
+        .slider-btn {
+            @apply flex-1 text-[9px] font-black uppercase py-1.5 text-center z-10 relative transition-colors duration-300;
+        }
+
+        .slider-active {
+            @apply text-blue-700;
+        }
+
+        .slider-inactive {
+            @apply text-slate-400 hover:text-slate-600;
+        }
+
+        .slider-bg {
+            @apply absolute top-1 bottom-1 bg-white rounded shadow-sm transition-all duration-300 ease-out;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 h-screen w-full flex flex-col items-center overflow-hidden font-sans">
+
+    <div class="w-full max-w-[1920px] h-full flex flex-col p-4 gap-4">
+
+        <!-- [TOPBAR] -->
+        <header
+            class="flex justify-between items-center bg-white rounded-2xl px-8 py-4 shadow-sm border border-slate-200 shrink-0">
+            <div class="flex items-center gap-6">
+                <img src="assets/ece_logo_cropped.png" class="h-9 w-auto mix-blend-multiply" alt="ECE">
+                <div class="h-6 w-px bg-slate-200"></div>
+                <div class="flex flex-col">
+                    <h1 class="font-black text-slate-800 text-xl leading-none uppercase tracking-tighter italic">PROJECT
+                        <span class="text-blue-600">AWRA</span>
+                    </h1>
+                    <p class="text-[9px] text-slate-400 font-bold tracking-[0.2em] uppercase mt-1">Automated Weather
+                        Report Analytics</p>
+                </div>
+                <div class="h-10 w-px bg-slate-200 mx-2"></div>
+                <div class="flex flex-col justify-center">
+                    <span id="last-updated"
+                        class="text-[11px] font-black text-slate-500 uppercase tracking-tight">Syncing Live
+                        Data...</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-6">
+                <!-- Unified Intelligence Bar -->
+                <div class="flex items-center bg-slate-50 rounded-full border border-slate-200 shadow-sm p-1 pr-5">
+
+                    <!-- Label Section -->
+                    <div
+                        class="bg-white border border-slate-100 rounded-full px-4 py-1.5 flex items-center gap-2 shadow-sm shrink-0">
+                        <span class="relative flex h-2 w-2">
+                            <span
+                                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                        </span>
+                        <span class="text-[9px] font-black text-slate-700 uppercase tracking-widest">Active
+                            Monitoring</span>
+                    </div>
+
+                    <!-- Dynamic Content -->
+                    <span class="mx-3 h-4 w-px bg-slate-200"></span>
+                    <i class="fa-solid fa-satellite-dish text-blue-500 text-[10px] animate-pulse mr-2"></i>
+                    <span
+                        class="text-[10px] font-bold text-blue-900 uppercase tracking-tight line-clamp-1 max-w-[250px]"
+                        id="ticker-text">Initializing Feed...</span>
+
+                </div>
+            </div>
+        </header>
+
+        <!-- [MAIN DASHBOARD GRID - 4 COLUMN BALANCED (2:1:1)] -->
+        <main class="flex-1 grid grid-cols-4 gap-6 min-h-0">
+
+            <!-- COLUMN 1 & 2 (50%): PRIMARY VISUALS -->
+            <div class="col-span-2 flex flex-col gap-6 overflow-hidden">
+                <!-- Live Map (Top - Taller) -->
+                <div
+                    class="flex-[3.5] bg-slate-900 rounded-2xl border border-slate-200 overflow-hidden relative shadow-md">
+                    <div class="absolute top-5 left-7 z-10 pointer-events-none drop-shadow-2xl">
+                        <h3 class="text-white font-black text-base tracking-widest uppercase flex items-center gap-3">
+                            <i class="fa-solid fa-tower-broadcast text-blue-400"></i> Windy Live Satellite
+                        </h3>
+                        <p class="text-[11px] text-slate-300 font-bold uppercase tracking-[0.2em] pl-10 opacity-70">
+                            Real-time Regional Telemetry</p>
+                    </div>
+                    <div
+                        class="absolute top-5 right-7 z-10 bg-red-600 text-white text-[10px] font-black px-4 py-1.5 rounded-lg shadow-xl animate-pulse">
+                        LIVE DATA</div>
+                    <iframe width="100%" height="100%"
+                        src="https://embed.windy.com/embed2.html?lat=12.8&lon=122.0&detailLat=12.8&detailLon=122.0&width=650&height=450&zoom=5&level=surface&overlay=satellite&product=satellite&menu=&message=&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=default&metricTemp=default&radarRange=-1"
+                        frameborder="0" class="contrast-125 brightness-110 saturate-[1.1]"></iframe>
+                </div>
+
+                <!-- 10-Day Forecast (Bottom) -->
+                <div
+                    class="flex-[2] bg-white rounded-2xl border border-slate-200 overflow-hidden flex flex-col shadow-sm">
+                    <div
+                        class="px-8 py-5 border-b border-slate-50 bg-slate-50/50 flex justify-between items-center shrink-0">
+                        <span
+                            class="text-xs font-black uppercase tracking-[0.15em] text-slate-800 flex items-center gap-3"><i
+                                class="fa-solid fa-calendar-alt text-blue-600"></i> Probabilistic
+                            10-day Forecast</span>
+                        <div class="flex bg-slate-200/50 p-1 rounded-xl">
+                            <button onclick="renderForecast('metro_manila')"
+                                class="px-8 py-1.5 text-[10px] font-black bg-white rounded-lg shadow-sm text-blue-600 transition uppercase"
+                                id="tab-mnl">Metro Manila</button>
+                            <button onclick="renderForecast('dumaguete')"
+                                class="px-8 py-2 text-[10px] font-bold text-slate-400 ml-1 transition hover:text-slate-600 uppercase"
+                                id="tab-dgt">Dumaguete HQ</button>
+                        </div>
+                    </div>
+                    <div class="flex-1 overflow-y-auto hide-scrollbar">
+                        <table class="w-full text-left">
+                            <thead
+                                class="bg-slate-50/90 text-[10px] text-slate-400 font-black uppercase sticky top-0 tracking-widest px-8">
+                                <tr>
+                                    <th class="px-10 py-4.5">Day</th>
+                                    <th class="px-10 py-4.5">Condition</th>
+                                    <th class="px-10 py-4.5 text-center">Temp Matrix</th>
+                                    <th class="px-10 py-4.5 text-right">Rain Prob</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 text-[11px] font-medium text-slate-600"
+                                id="forecast-table-body">
+                                <!-- Data Inject -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COLUMN 3 (25%): MIDDLE UTILITIES -->
+            <div class="col-span-1 flex flex-col gap-6 overflow-hidden">
+                <!-- Typhoon Monitor -->
+                <!-- Typhoon Monitor -->
+                <div
+                    class="bg-white rounded-2xl border border-slate-200 flex flex-col p-4 shadow-sm shrink-0 overflow-hidden relative min-h-[90px]">
+
+                    <!-- Header Row: Title (Left) & Track Link (Right) -->
+                    <div class="flex justify-between items-center mb-4 shrink-0 min-h-[20px]">
+                        <h3
+                            class="text-xs font-black uppercase tracking-[0.15em] text-slate-800 flex items-center gap-2">
+                            <i id="typhoon-card-icon" class="fa-solid fa-hurricane text-slate-400"></i>
+                            <span id="typhoon-card-title">PAR Alert Channel</span>
+                        </h3>
+
+                        <div id="typhoon-track-link" class="hidden">
+                            <a id="tylink-gas"
+                                href="https://drive.google.com/file/d/1LZTw3l0vYNmhpUxcankcPZ2IGVRuHymd/view"
+                                target="_blank"
+                                class="flex items-center gap-1.5 text-pink-600 hover:text-pink-700 transition-colors group">
+                                <i
+                                    class="fa-solid fa-map-location-dot text-[11px] group-hover:scale-110 transition-transform"></i>
+                                <span
+                                    class="text-[9px] font-black uppercase tracking-tighter italic border-b border-pink-200">View
+                                    Track</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-4 z-10 flex-1">
+                        <!-- Icon Left -->
+                        <div class="relative w-12 h-12 shrink-0">
+                            <img src="assets/typhoon_satellite.png"
+                                class="w-full h-full object-cover rounded-full animate-spin-slow ring-1 ring-slate-100 shadow-sm"
+                                alt="Typhoon">
+                            <div class="absolute inset-0 bg-red-500 rounded-full opacity-0 animate-ping"
+                                id="typhoon-ping">
+                            </div>
+                        </div>
+
+                        <!-- Text Right -->
+                        <div class="flex flex-col min-w-0 flex-1">
+                            <p class="text-[11px] font-bold text-slate-800 leading-tight" id="typhoon-text">Detecting
+                                Stats...</p>
+                        </div>
+                    </div>
+
+                    <!-- Subtle Bg Decoration -->
+                    <div class="absolute -right-6 -bottom-6 text-slate-50 opacity-10 text-9xl z-0 pointer-events-none">
+                        <i class="fa-solid fa-hurricane"></i>
+                    </div>
+                </div>
+
+                <!-- Manila Summary -->
+                <div
+                    class="flex-1 bg-white rounded-2xl border border-slate-200 flex flex-col p-5 shadow-sm overflow-hidden min-h-0">
+                    <div class="flex justify-between items-start mb-3 shrink-0">
+                        <div class="flex flex-col gap-1">
+                            <span class="text-xs font-black uppercase tracking-[0.15em] text-slate-800">Metro
+                                Manila</span>
+                            <div class="flex items-center gap-3 text-slate-500">
+                                <span id="mnl-temp-range"
+                                    class="text-[11px] font-bold bg-slate-100 px-2 py-0.5 rounded text-slate-600">--°
+                                    /
+                                    --°</span>
+                                <span id="mnl-rain-prob"
+                                    class="text-[11px] font-bold text-blue-500 flex items-center gap-1"><i
+                                        class="fa-solid fa-droplet"></i> --%</span>
+                            </div>
+                        </div>
+                        <span id="mnl-weather-icon" class="text-3xl text-slate-400"></span>
+                    </div>
+                    <div
+                        class="bg-slate-50 rounded-xl p-4 flex-1 overflow-y-auto hide-scrollbar border border-slate-100/50">
+                        <p class="text-[11px] font-medium text-slate-600 leading-relaxed line-clamp-4" id="mnl-summary">
+                            Updating sensors...</p>
+                    </div>
+                </div>
+
+                <!-- Dumaguete Summary -->
+                <div
+                    class="flex-1 bg-white rounded-2xl border border-slate-200 flex flex-col p-5 shadow-sm overflow-hidden min-h-0">
+                    <div class="flex justify-between items-start mb-3 shrink-0">
+                        <div class="flex flex-col gap-1">
+                            <span class="text-xs font-black uppercase tracking-[0.15em] text-slate-800">Dumaguete</span>
+                            <div class="flex items-center gap-3 text-slate-500">
+                                <span id="dgt-temp-range"
+                                    class="text-[11px] font-bold bg-slate-100 px-2 py-0.5 rounded text-slate-600">--°
+                                    /
+                                    --°</span>
+                                <span id="dgt-rain-prob"
+                                    class="text-[11px] font-bold text-blue-500 flex items-center gap-1"><i
+                                        class="fa-solid fa-droplet"></i> --%</span>
+                            </div>
+                        </div>
+                        <span id="dgt-weather-icon" class="text-3xl text-slate-400"></span>
+                    </div>
+                    <div
+                        class="bg-slate-50 rounded-xl p-4 flex-1 overflow-y-auto hide-scrollbar border border-slate-100/50">
+                        <p class="text-[11px] font-medium text-slate-600 leading-relaxed line-clamp-4" id="dgt-summary">
+                            Updating sensors...</p>
+                    </div>
+                </div>
+
+                <!-- Key Takeaways -->
+                <div
+                    class="flex-[1.5] bg-white rounded-2xl border border-slate-200 flex flex-col p-5 shadow-sm overflow-hidden">
+                    <h3
+                        class="text-xs font-black uppercase tracking-[0.15em] text-slate-800 mb-4 shrink-0 flex items-center gap-2">
+                        <i class="fa-solid fa-list-check text-slate-400"></i> Key Takeaways
+                    </h3>
+                    <div class="flex-1 overflow-y-auto hide-scrollbar">
+                        <ul class="space-y-4" id="takeaways-list">
+                            <!-- Data Inject -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COLUMN 4 (25%): RIGHT SIDEBAR -->
+            <div class="col-span-1 flex flex-col gap-6 overflow-hidden">
+
+                <!-- Active Alerts (Compact Header) -->
+                <div
+                    class="flex-[1.5] bg-white rounded-2xl border border-slate-200 flex flex-col shadow-sm overflow-hidden text-left">
+                    <div
+                        class="px-5 py-3 border-b border-slate-50 bg-white flex justify-between items-center shrink-0 min-h-[50px]">
+                        <span
+                            class="text-xs font-black uppercase tracking-[0.15em] text-slate-800 flex items-center gap-3"><i
+                                class="fa-solid fa-bullhorn text-red-600"></i> Active Alerts</span>
+                        <!-- Compact Inline Slider -->
+                        <div class="bg-slate-100 rounded p-1 flex relative w-40 h-8">
+                            <div class="absolute top-1 bottom-1 bg-white rounded shadow-sm transition-all duration-300 ease-out"
+                                id="alert-slider-bg" style="width: 48%; left: 4px;"></div>
+                            <button onclick="renderAlerts('Manila')"
+                                class="flex-1 text-[10px] font-black uppercase text-center z-10 relative text-blue-700"
+                                id="alert-tab-mnl">MNL</button>
+                            <button onclick="renderAlerts('Dumaguete')"
+                                class="flex-1 text-[10px] font-black uppercase text-center z-10 relative text-slate-400 hover:text-slate-600"
+                                id="alert-tab-dgt">DGT</button>
+                        </div>
+                    </div>
+                    <div class="flex-1 overflow-y-auto px-5 py-3 space-y-3 bg-slate-50/20 hide-scrollbar"
+                        id="advisories-list">
+                        <!-- Data Inject -->
+                    </div>
+                </div>
+
+
+                <!-- Site Impact -->
+                <div class="h-44 bg-white rounded-2xl border border-slate-200 flex flex-col p-6 shadow-sm shrink-0">
+                    <h3
+                        class="text-xs font-black uppercase tracking-[0.15em] text-slate-800 mb-6 italic flex items-center gap-3">
+                        <i class="fa-solid fa-chart-pie text-emerald-500"></i> Site Impact
+                    </h3>
+                    <div class="space-y-7">
+                        <div class="flex flex-col gap-2.5">
+                            <div class="flex justify-between items-center"><span
+                                    class="text-[10px] font-black text-slate-400 uppercase">MNL HQ</span><span
+                                    id="mnl-impact-badge"
+                                    class="px-2.5 py-1 rounded text-[8px] font-black uppercase ring-1 ring-slate-100 shadow-sm">--</span>
+                            </div>
+                            <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+                                <div id="mnl-impact-bar"
+                                    class="h-full bg-slate-300 rounded-full transition-all duration-1000 shadow-sm"
+                                    style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col gap-2.5">
+                            <div class="flex justify-between items-center"><span
+                                    class="text-[10px] font-black text-slate-400 uppercase">DGT Site</span><span
+                                    id="dgt-impact-badge"
+                                    class="px-2.5 py-1 rounded text-[8px] font-black uppercase ring-1 ring-slate-100 shadow-sm">--</span>
+                            </div>
+                            <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+                                <div id="dgt-impact-bar"
+                                    class="h-full bg-slate-300 rounded-full transition-all duration-1000 shadow-sm"
+                                    style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Operational Recommendations -->
+                <div
+                    class="flex-[2.5] bg-white rounded-2xl border border-slate-200 shadow-sm flex flex-col overflow-hidden text-left">
+                    <div
+                        class="px-6 py-4 border-b border-slate-50 bg-white flex justify-between items-center shrink-0 min-h-[50px]">
+                        <h3
+                            class="text-xs font-black uppercase tracking-[0.15em] text-slate-800 flex items-center gap-3">
+                            <i class="fa-solid fa-clipboard-check text-blue-600"></i> Ops Recos
+                        </h3>
+                        <!-- Compact Inline Slider -->
+                        <div class="bg-slate-100 rounded p-1 flex relative w-40 h-8">
+                            <div class="absolute top-1 bottom-1 bg-white rounded shadow-sm transition-all duration-300 ease-out"
+                                id="rec-slider-bg" style="width: 48%; left: 4px;"></div>
+                            <button onclick="renderRecommendations('metro_manila')"
+                                class="flex-1 text-[10px] font-black uppercase text-center z-10 relative text-blue-700"
+                                id="rec-tab-mnl">MNL</button>
+                            <button onclick="renderRecommendations('dumaguete')"
+                                class="flex-1 text-[10px] font-black uppercase text-center z-10 relative text-slate-400 hover:text-slate-600"
+                                id="rec-tab-dgt">DGT</button>
+                        </div>
+                    </div>
+                    <div class="flex-1 overflow-y-auto p-6 hide-scrollbar" id="recs-list">
+                        <!-- Data Inject -->
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- [FOOTER] -->
+        <footer
+            class="flex justify-between items-center bg-white rounded-xl px-8 py-3 border border-slate-200 shadow-sm shrink-0">
+            <div class="flex items-center gap-8 text-[10px] font-black text-slate-500 uppercase tracking-widest">
+
+                <!-- System Status -->
+                <div class="flex items-center gap-2 text-emerald-600">
+                    <span class="relative flex h-2 w-2">
+                        <span
+                            class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                    </span>
+                    <span>System Status: Online</span>
+                </div>
+
+                <div class="h-3 w-px bg-slate-200"></div>
+
+                <!-- Telemetry -->
+                <span class="flex items-center gap-2"><i class="fa-solid fa-server text-slate-400"></i>
+                    Live Data Sync: MNL / DGT</span>
+
+                <div class="h-3 w-px bg-slate-200"></div>
+
+                <!-- Data Sources -->
+                <div class="flex items-center gap-4">
+                    <span class="text-slate-400">Data Sources:</span>
+                    <div class="flex items-center gap-3 text-slate-700">
+                        <a href="https://bagong.pagasa.dost.gov.ph/" target="_blank"
+                            class="hover:text-blue-600 transition flex items-center gap-1.5 group">
+                            <img src="assets/pagasa_logo.png"
+                                class="h-5 w-5 object-contain group-hover:scale-110 transition-transform" alt="PAGASA">
+                            PAGASA
+                        </a>
+                        <span class="text-slate-300">|</span>
+                        <a href="https://www.accuweather.com/" target="_blank"
+                            class="hover:text-orange-500 transition flex items-center gap-1.5 group">
+                            <i
+                                class="fa-solid fa-sun text-orange-400 text-xl group-hover:scale-110 transition-transform"></i>
+                            AccuWeather
+                        </a>
+                        <span class="text-slate-300">|</span>
+                        <a href="https://www.windy.com/" target="_blank"
+                            class="hover:text-red-500 transition flex items-center gap-1.5 group">
+                            <i
+                                class="fa-solid fa-wind text-red-500 text-xl group-hover:scale-110 transition-transform"></i>
+                            Windy
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center gap-3">
+                <button onclick="toggleGuide()"
+                    class="bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 px-5 py-2 rounded-lg text-xs font-black transition flex items-center gap-2 shadow-sm uppercase tracking-wider">
+                    <i class="fa-solid fa-book-open text-blue-500"></i> Field Guide
+                </button>
+                <a href="https://drive.google.com/file/d/1wMF4WO1QdjlKwTSJ_uyLF6T5ahCQaS9b/view" target="_blank"
+                    class="bg-slate-900 border border-slate-800 hover:bg-black text-white px-6 py-2 rounded-lg text-xs font-black transition flex items-center gap-2 shadow-sm uppercase tracking-wider">
+                    <i class="fa-solid fa-print text-blue-400"></i> Print Summary
+                </a>
+            </div>
+        </footer>
+
+        <!-- [MODAL: FIELD GUIDE] -->
+        <div id="guide-modal" class="fixed inset-0 z-50 hidden">
+            <!-- Backdrop -->
+            <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onclick="toggleGuide()">
+            </div>
+
+            <!-- Content -->
+            <div
+                class="absolute inset-4 md:inset-10 bg-white rounded-3xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in duration-200">
+                <!-- Header -->
+                <div class="px-8 py-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                    <div>
+                        <h2 class="text-lg font-black text-slate-800 uppercase tracking-tight flex items-center gap-3">
+                            <i class="fa-solid fa-book-journal-whills text-blue-600"></i> Field Reference Guide
+                        </h2>
+                        <p class="text-xs text-slate-500 font-medium mt-1">Standard Operational Definitions &
+                            Classifications (PAGASA / DOST)</p>
+                    </div>
+                    <button onclick="toggleGuide()"
+                        class="h-8 w-8 rounded-full bg-slate-200 text-slate-500 hover:bg-red-500 hover:text-white transition flex items-center justify-center">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <!-- Scrollable Body -->
+                <div class="flex-1 overflow-y-auto p-8 bg-slate-50/30">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+                        <!-- 1. Typhoon Classifications -->
+                        <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+                            <h3
+                                class="text-xs font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                <i class="fa-solid fa-hurricane"></i> Typhoon Classifications
+                            </h3>
+                            <table class="w-full text-xs text-left">
+                                <thead class="bg-slate-50 text-slate-500 font-bold uppercase">
+                                    <tr>
+                                        <th class="p-2 rounded-l-lg">Category</th>
+                                        <th class="p-2 rounded-r-lg text-right">Wind Speed (kph)</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100 text-slate-700 font-medium">
+                                    <tr>
+                                        <td class="p-2">Tropical Depression (TD)</td>
+                                        <td class="p-2 text-right text-slate-500">Up to 61</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2">Tropical Storm (TS)</td>
+                                        <td class="p-2 text-right text-slate-500">62 - 88</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2">Severe Tropical Storm (STS)</td>
+                                        <td class="p-2 text-right text-slate-500">89 - 117</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2 font-bold text-blue-600">Typhoon (TY)</td>
+                                        <td class="p-2 text-right font-bold text-blue-600">118 - 184</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2 font-black text-red-600">Super Typhoon (STY)</td>
+                                        <td class="p-2 text-right font-black text-red-600">185+</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- 2. Rainfall Warning -->
+                        <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+                            <h3
+                                class="text-xs font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                <i class="fa-solid fa-cloud-showers-heavy"></i> Rainfall Warning System
+                            </h3>
+                            <div class="space-y-3">
+                                <div
+                                    class="flex items-start gap-4 p-3 rounded-lg bg-yellow-50 border border-yellow-100">
+                                    <i class="fa-solid fa-circle-exclamation text-yellow-500 mt-1"></i>
+                                    <div>
+                                        <h4 class="text-sm font-black text-yellow-600 uppercase">Yellow (Monitor)</h4>
+                                        <p class="text-xs text-slate-600 mt-1">Heavy Rain (7.5-15mm/hr). Flooding is
+                                            possible in low-lying areas. Monitor weather conditions.</p>
+                                    </div>
+                                </div>
+                                <div
+                                    class="flex items-start gap-4 p-3 rounded-lg bg-orange-50 border border-orange-100">
+                                    <i class="fa-solid fa-triangle-exclamation text-orange-500 mt-1"></i>
+                                    <div>
+                                        <h4 class="text-sm font-black text-orange-600 uppercase">Orange (Alert)</h4>
+                                        <p class="text-xs text-slate-600 mt-1">Intense Rain (15-30mm/hr). Flooding is
+                                            threatening. Preparedness measures advised.</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-4 p-3 rounded-lg bg-red-50 border border-red-100">
+                                    <i class="fa-solid fa-bell text-red-600 mt-1 animate-pulse"></i>
+                                    <div>
+                                        <h4 class="text-sm font-black text-red-600 uppercase">Red (Emergency)</h4>
+                                        <p class="text-xs text-slate-600 mt-1">Torrential Rain (>30mm/hr). Severe
+                                            flooding expected. Evacuation protocols active.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. Heat Index -->
+                        <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+                            <h3
+                                class="text-xs font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                <i class="fa-solid fa-temperature-full"></i> Heat Index Safety
+                            </h3>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="p-3 bg-slate-50 rounded-lg text-center border border-slate-100">
+                                    <span class="block text-2xl font-black text-amber-500">Caution</span>
+                                    <span class="text-xs font-bold text-slate-600">27°C - 32°C</span>
+                                    <p class="text-[10px] text-slate-400 mt-1 leading-tight">Fatigue possible with
+                                        prolonged exposure.</p>
+                                </div>
+                                <div class="p-3 bg-orange-50 rounded-lg text-center border border-orange-100">
+                                    <span class="block text-2xl font-black text-orange-500">Extreme</span>
+                                    <span class="text-xs font-bold text-slate-600">33°C - 41°C</span>
+                                    <p class="text-[10px] text-slate-400 mt-1 leading-tight">Heat cramps & exhaustion
+                                        likely.</p>
+                                </div>
+                                <div
+                                    class="p-3 bg-red-50 rounded-lg text-center border border-red-100 col-span-2 flex items-center justify-between px-6">
+                                    <div class="text-left">
+                                        <span class="block text-xl font-black text-red-600 uppercase">Danger Zone</span>
+                                        <p class="text-[10px] text-slate-500 leading-tight">Heat stroke imminent.</p>
+                                    </div>
+                                    <span class="text-3xl font-black text-red-600">42°C+</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 4. Terminology -->
+                        <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+                            <h3
+                                class="text-xs font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                <i class="fa-solid fa-book"></i> Operational Terminology
+                            </h3>
+                            <ul class="space-y-4 text-xs">
+                                <li class="flex gap-3">
+                                    <span class="font-black text-slate-800 w-24 shrink-0 text-right">PAR</span>
+                                    <p class="text-slate-600"><strong class="text-blue-600">Philippine Area of
+                                            Responsibility</strong>. The designated area where PAGASA monitors weather
+                                        disturbances.</p>
+                                </li>
+                                <li class="flex gap-3">
+                                    <span
+                                        class="font-black text-slate-800 w-24 shrink-0 text-right">Determin-<br>istic</span>
+                                    <p class="text-slate-600"><strong class="text-blue-600">Single-Outcome
+                                            Forecast</strong>. A specific prediction (e.g., "It will rain at 2PM").
+                                        Useful for immediate planning but doesn't show uncertainty.</p>
+                                </li>
+                                <li class="flex gap-3">
+                                    <span
+                                        class="font-black text-slate-800 w-24 shrink-0 text-right">Probabil-<br>istic</span>
+                                    <p class="text-slate-600"><strong class="text-blue-600">Likelihood
+                                            Forecast</strong>. Expresses uncertainty (e.g., "70% chance of rain").
+                                        Better for risk assessment and contingency planning.</p>
+                                </li>
+                                <li class="flex gap-3">
+                                    <span class="font-black text-slate-800 w-24 shrink-0 text-right">LPA / HPA</span>
+                                    <p class="text-slate-600"><strong class="text-blue-600">Low/High Pressure
+                                            Area</strong>. LPA brings clouds and rain (bad weather). HPA brings fair to
+                                        clear skies (good weather).</p>
+                                </li>
+                                <li class="flex gap-3">
+                                    <span class="font-black text-slate-800 w-24 shrink-0 text-right">ITCZ</span>
+                                    <p class="text-slate-600"><strong class="text-blue-600">Intertropical Convergence
+                                            Zone</strong>. A belt of low pressure around the equator where winds
+                                        converge, often causing thunderstorms.</p>
+                                </li>
+                                <li class="flex gap-3">
+                                    <span class="font-black text-slate-800 w-24 shrink-0 text-right">Amihan</span>
+                                    <p class="text-slate-600"><strong class="text-blue-600">Northeast Monsoon</strong>.
+                                        Cool, dry wind (Oct-Mar). Brings cold mornings and light rains to the east.</p>
+                                </li>
+                                <li class="flex gap-3">
+                                    <span class="font-black text-slate-800 w-24 shrink-0 text-right">Habagat</span>
+                                    <p class="text-slate-600"><strong class="text-blue-600">Southwest Monsoon</strong>.
+                                        Warm, moist wind (May-Sep). Associated with heavy rainy seasons and typhoons.
+                                    </p>
+                                </li>
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- [DATA LOGIC] -->
+        <script>
+            function toggleGuide() {
+                const m = document.getElementById('guide-modal');
+                m.classList.toggle('hidden');
+            }
+
+            let globalData = null;
+            let activeAlertSite = 'Manila'; // Default for alerts
+
+            function getStyles(lvl) {
+                lvl = (lvl || "").toLowerCase();
+                if (lvl.includes("high") || lvl.includes("danger") || lvl.includes("red")) return { bg: "bg-red-600", text: "text-white", bar: "bg-red-600", w: "98%" };
+                if (lvl.includes("medium") || lvl.includes("moderate") || lvl.includes("yellow")) return { bg: "bg-amber-500", text: "text-white", bar: "bg-amber-500", w: "60%" };
+                return { bg: "bg-emerald-600", text: "text-white", bar: "bg-emerald-600", w: "15%" };
+            }
+
+            function wIcon(cond) {
+                cond = (cond || "").toLowerCase();
+                if (cond.includes("rain") || cond.includes("shower")) return "fa-cloud-showers-heavy text-blue-500";
+                if (cond.includes("hunder") || cond.includes("storm")) return "fa-bolt-lightning text-amber-500";
+                if (cond.includes("cloud")) return "fa-cloud-sun text-slate-400";
+                return "fa-sun text-yellow-500";
+            }
+
+            function renderForecast(site) {
+                if (!globalData?.forecast_10day?.accuweather) return;
+                document.getElementById('tab-mnl').className = site === 'metro_manila' ? "px-8 py-1.5 text-[10px] font-black bg-white rounded-lg shadow-sm text-blue-600 transition uppercase" : "px-8 py-2 text-[10px] font-bold text-slate-400 ml-1 transition hover:text-slate-600 uppercase";
+                document.getElementById('tab-dgt').className = site === 'dumaguete' ? "px-8 py-1.5 text-[10px] font-black bg-white rounded-lg shadow-sm text-blue-600 transition uppercase" : "px-8 py-2 text-[10px] font-bold text-slate-400 ml-1 transition hover:text-slate-600 uppercase";
+
+                const days = globalData.forecast_10day.accuweather[site] || [];
+                document.getElementById('forecast-table-body').innerHTML = days.slice(0, 10).map(day => `
+                <tr class="hover:bg-slate-50 transition-all duration-300 border-b border-slate-100 last:border-0">
+                    <td class="px-10 py-4.5 font-black text-slate-900 tracking-tighter uppercase whitespace-nowrap italic font-bold">${day.date_label}</td>
+                    <td class="px-10 py-4.5 text-slate-500 font-bold flex items-center gap-8 uppercase"><i class="fa-solid ${wIcon(day.description)} text-3xl"></i> ${day.description}</td>
+                    <td class="px-10 py-4.5 text-center font-black text-slate-700 text-xl">${(day.max_temp && day.max_temp !== 0) ? day.max_temp : "--"}° / ${day.min_temp}°</td>
+                    <td class="px-10 py-4.5 text-right font-black text-blue-600 text-xl uppercase line-clamp-1 font-bold">${day.pop}%</td>
+                </tr>`).join('');
+            }
+
+            function renderRecommendations(site) {
+                // Rec Slider Animation (Compact)
+                const sliderBg = document.getElementById('rec-slider-bg');
+                const btnMnl = document.getElementById('rec-tab-mnl');
+                const btnDgt = document.getElementById('rec-tab-dgt');
+
+                // Consistent compact styling
+                btnMnl.className = site === 'metro_manila' ? 'flex-1 text-[10px] font-black uppercase text-center z-10 relative text-blue-700 transition' : 'flex-1 text-[10px] font-black uppercase text-center z-10 relative text-slate-400 hover:text-slate-600 transition';
+                btnDgt.className = site === 'dumaguete' ? 'flex-1 text-[10px] font-black uppercase text-center z-10 relative text-blue-700 transition' : 'flex-1 text-[10px] font-black uppercase text-center z-10 relative text-slate-400 hover:text-slate-600 transition';
+
+                if (site === 'metro_manila') { sliderBg.style.left = '4px'; } else { sliderBg.style.left = '50%'; }
+
+                if (!globalData?.operational_recommendations) return;
+                const items = globalData.operational_recommendations[site] || [];
+                document.getElementById('recs-list').innerHTML = items.map(rec => `
+                <div class="flex gap-4 items-start mb-5 last:mb-0">
+                    <i class="fa-solid fa-chevron-right mt-1 opacity-30 text-[9px]"></i>
+                    <p class="text-[11px] text-slate-600 font-medium leading-tight tracking-tight line-clamp-2">${rec}</p>
+                </div>`).join('') || `<p class="text-[11px] text-slate-400 font-black uppercase tracking-widest opacity-60">No Live Directives...</p>`;
+            }
+
+            function renderAlerts(site) {
+                activeAlertSite = site;
+                // Compact Header Slider Animation
+                const bg = document.getElementById('alert-slider-bg');
+                const bM = document.getElementById('alert-tab-mnl');
+                const bD = document.getElementById('alert-tab-dgt');
+
+                // Just use simple text colors for the compact toggle
+                bM.className = site === 'Manila' ? 'flex-1 text-[10px] font-black uppercase text-center z-10 relative text-blue-700 transition' : 'flex-1 text-[10px] font-black uppercase text-center z-10 relative text-slate-400 hover:text-slate-600 transition';
+                bD.className = site === 'Dumaguete' ? 'flex-1 text-[10px] font-black uppercase text-center z-10 relative text-blue-700 transition' : 'flex-1 text-[10px] font-black uppercase text-center z-10 relative text-slate-400 hover:text-slate-600 transition';
+
+                if (site === 'Manila') { bg.style.left = '4px'; } else { bg.style.left = '50%'; } // 50% for 2 items
+
+                const alist = document.getElementById('advisories-list');
+                alist.innerHTML = "";
+                const p = globalData?.active_pagasa_advisories;
+                if (!p) {
+                    alist.innerHTML = `<div class="h-full flex flex-col items-center justify-center opacity-30 pb-2"><i class="fa-solid fa-circle-exclamation text-4xl mb-2 text-slate-300"></i><p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Scanner Offline</p></div>`;
+                    return;
+                }
+
+                const insert = (s, t, m, c) => {
+                    if (s !== site || !t || t.toLowerCase().includes("no active") || t.toLowerCase().includes("no heavy")) return;
+                    // REMOVED COLOURED BORDER & INNER CARD BORDER (FLAT STYLE)
+                    alist.innerHTML += `
+                    <div class="bg-slate-50 p-4 rounded-xl">
+                        <span class="text-[10px] font-black text-slate-400 uppercase mb-1 block tracking-widest flex items-center gap-2">
+                             <i class="fa-solid fa-circle text-[6px] ${c === 'rain' ? 'text-blue-500' : 'text-amber-500'}"></i>
+                             ${s} | ${c.toUpperCase()} Alert
+                        </span>
+                        <p class="text-xs font-black text-slate-800 leading-tight mb-2 italic font-black line-clamp-1">${t}</p>
+                        <p class="text-[11px] text-slate-500 font-medium leading-normal line-clamp-2">${m}</p>
+                    </div>`;
+                };
+
+                insert("Manila", p.rainfall_warning?.metro_manila?.title, p.rainfall_warning?.metro_manila?.summary, 'rain');
+                insert("Manila", p.thunderstorm_warning?.metro_manila?.title, p.thunderstorm_warning?.metro_manila?.summary, 'storm');
+                insert("Dumaguete", p.rainfall_warning?.dumaguete?.title, p.rainfall_warning?.dumaguete?.summary, 'rain');
+                insert("Dumaguete", p.thunderstorm_warning?.dumaguete?.title, p.thunderstorm_warning?.dumaguete?.summary, 'storm');
+
+                if (!alist.innerHTML) alist.innerHTML = `<div class="h-full flex flex-col items-center justify-center opacity-30 pb-2"><i class="fa-solid fa-cloud-sun text-4xl mb-2 text-slate-300"></i><p class="text-[10px] font-black uppercase tracking-widest text-slate-400">No Alerts for ${site}</p></div>`;
+            }
+
+            function init() {
+                // Check if running in GAS
+                if (typeof google === 'undefined') {
+                    console.warn("GAS Environment not detected. Local fetch...");
+                    // FALLBACK: Local Fetch for testing outside GAS
+                    fetch('summary.json')
+                        .then(res => res.json())
+                        .then(data => {
+                            globalData = data;
+                            // Re-use the same parsing logic - calling a shared update function or duplicating logic here for now
+                            // To keep it simple and robust, we will just copy the main update logic block here or restructure.
+                            // Given the prompt constraints, I will duplicate the update logic block to ensure instant fix without major refactor risk.
+
+                            // --- DUPLICATED UPDATE LOGIC START ---
+                            document.getElementById('last-updated').innerText = data.summary_of_current_conditions?.date?.toUpperCase() || "--";
+                            document.getElementById('ticker-text').innerText = (data.summary_of_current_conditions?.system_in_effect || "SYNC NORMAL").toUpperCase();
+
+                            const mData = data.forecast_10day?.accuweather?.metro_manila?.[0];
+                            const dData = data.forecast_10day?.accuweather?.dumaguete?.[0];
+
+                            if (mData) {
+                                document.getElementById('mnl-temp-range').innerText = `${mData.min_temp}° / ${mData.max_temp}°`;
+                                document.getElementById('mnl-rain-prob').innerHTML = `<i class="fa-solid fa-droplet"></i> ${mData.pop}%`;
+                                document.getElementById('mnl-weather-icon').innerHTML = `<i class="fa-solid ${wIcon(mData.description)}"></i>`;
+                            }
+                            if (dData) {
+                                document.getElementById('dgt-temp-range').innerText = `${dData.min_temp}° / ${dData.max_temp}°`;
+                                document.getElementById('dgt-rain-prob').innerHTML = `<i class="fa-solid fa-droplet"></i> ${dData.pop}%`;
+                                document.getElementById('dgt-weather-icon').innerHTML = `<i class="fa-solid ${wIcon(dData.description)}"></i>`;
+                            }
+
+                            const cleanSummary = (txt) => {
+                                if (!txt) return "Updating...";
+                                let clean = txt.replace(/For the next 24 hours, expect /gi, "")
+                                    .replace(/For the next 24 hours, /gi, "")
+                                    .replace(/Valid until.*?\. /gi, "")
+                                    .trim();
+                                return clean.charAt(0).toUpperCase() + clean.slice(1);
+                            };
+
+                            document.getElementById('mnl-summary').innerText = cleanSummary(data.summary_of_current_conditions.metro_manila_email);
+                            document.getElementById('dgt-summary').innerText = cleanSummary(data.summary_of_current_conditions.dumaguete_email);
+
+                            const highLightStorm = (txt) => {
+                                if (!txt) return "";
+                                let formatted = txt;
+                                const keywords = ["Tropical Depression", "Tropical Storm", "Severe Tropical Storm", "Typhoon", "Super Typhoon", "Cyclone"];
+                                keywords.forEach(word => {
+                                    const regex = new RegExp(word, 'gi');
+                                    formatted = formatted.replace(regex, (match) => `<span class="text-red-600 font-black">${match}</span>`);
+                                });
+                                formatted = formatted.replace(/\(([^)]+)\)/g, '<span class="text-red-600 font-black">($1)</span>');
+                                return formatted;
+                            };
+
+                            const sysEffect = (data.summary_of_current_conditions?.system_in_effect || "").toLowerCase();
+                            const hasStormInSystem = sysEffect.includes("storm") || sysEffect.includes("typhoon") || sysEffect.includes("cyclone");
+                            const tyObj = (data.active_pagasa_advisories?.other_advisories || []).find(x => ((x.title || "") + (x.summary || "")).toLowerCase().match(/typhoon|cyclone|tropical storm/));
+
+                            const monTxt = document.getElementById('typhoon-text');
+                            const trackLink = document.getElementById('typhoon-track-link');
+                            const cardTitle = document.getElementById('typhoon-card-title');
+                            const cardIcon = document.getElementById('typhoon-card-icon');
+
+                            if (tyObj || hasStormInSystem) {
+                                const rawText = tyObj ? tyObj.title : data.summary_of_current_conditions.system_in_effect;
+                                monTxt.innerHTML = highLightStorm(rawText);
+                                monTxt.className = "text-[11px] font-bold text-slate-800 leading-tight";
+                                trackLink.classList.remove('hidden');
+                                if (cardTitle) cardTitle.innerText = "ACTIVE CYCLONE";
+                                if (cardIcon) cardIcon.className = "fa-solid fa-hurricane text-red-600 animate-pulse";
+                            } else {
+                                monTxt.innerText = "NO SYSTEMS IN PAR";
+                                monTxt.className = "text-[11px] font-black text-emerald-600 tracking-tighter italic font-black";
+                                trackLink.classList.add('hidden');
+                                if (cardTitle) cardTitle.innerText = "PAR Alert Channel";
+                                if (cardIcon) cardIcon.className = "fa-solid fa-hurricane text-slate-400";
+                            }
+
+                            const setImpact = (site, d) => {
+                                const st = getStyles(d.impact_level);
+                                const id = site === 'metro_manila' ? 'mnl' : 'dgt';
+                                document.getElementById(`${id}-impact-badge`).innerText = d.impact_level;
+                                document.getElementById(`${id}-impact-badge`).className = `${st.bg} ${st.text} px-2.5 py-1 rounded text-[8px] font-black uppercase shadow-sm`;
+                                const bar = document.getElementById(`${id}-impact-bar`);
+                                bar.className = `h-full ${st.bar} rounded-full transition-all duration-1000 shadow-sm`;
+                                setTimeout(() => bar.style.width = st.w, 100);
+                            };
+                            setImpact('metro_manila', data.site_impact_summary.metro_manila);
+                            setImpact('dumaguete', data.site_impact_summary.dumaguete);
+
+                            renderForecast('metro_manila');
+                            renderRecommendations('metro_manila');
+                            renderAlerts('Manila');
+                            document.getElementById('takeaways-list').innerHTML = data.key_takeaways.map(t => `<li class="flex gap-4 items-start"><i class="fa-solid fa-check-circle text-emerald-500 mt-0.5 shrink-0 text-[11px]"></i><span class="text-[11px] text-slate-500 font-medium leading-tight tracking-tight line-clamp-2">${t}</span></li>`).join('');
+                            // --- DUPLICATED UPDATE LOGIC END ---
+                        })
+                        .catch(e => console.error("Local Fetch Error", e));
+                    return;
+                }
+
+                google.script.run
+                    .withSuccessHandler(function (jsonString) {
+                        try {
+                            const data = JSON.parse(jsonString);
+                            globalData = data;
+
+                            document.getElementById('last-updated').innerText = data.summary_of_current_conditions?.date?.toUpperCase() || "--";
+                            document.getElementById('ticker-text').innerText = (data.summary_of_current_conditions?.system_in_effect || "SYNC NORMAL").toUpperCase();
+
+                            // Temp & Data Injection for Summary Cards
+                            const mData = data.forecast_10day?.accuweather?.metro_manila?.[0];
+                            const dData = data.forecast_10day?.accuweather?.dumaguete?.[0];
+
+                            if (mData) {
+                                document.getElementById('mnl-temp-range').innerText = `${mData.min_temp}° / ${mData.max_temp}°`;
+                                document.getElementById('mnl-rain-prob').innerHTML = `<i class="fa-solid fa-droplet"></i> ${mData.pop}%`;
+                                document.getElementById('mnl-weather-icon').innerHTML = `<i class="fa-solid ${wIcon(mData.description)}"></i>`;
+                            }
+                            if (dData) {
+                                document.getElementById('dgt-temp-range').innerText = `${dData.min_temp}° / ${dData.max_temp}°`;
+                                document.getElementById('dgt-rain-prob').innerHTML = `<i class="fa-solid fa-droplet"></i> ${dData.pop}%`;
+                                document.getElementById('dgt-weather-icon').innerHTML = `<i class="fa-solid ${wIcon(dData.description)}"></i>`;
+                            }
+
+                            // Clean Text Helper
+                            const cleanSummary = (txt) => {
+                                if (!txt) return "Updating...";
+                                let clean = txt.replace(/For the next 24 hours, expect /gi, "")
+                                    .replace(/For the next 24 hours, /gi, "")
+                                    .replace(/Valid until.*?\. /gi, "")
+                                    .trim();
+                                return clean.charAt(0).toUpperCase() + clean.slice(1);
+                            };
+
+                            document.getElementById('mnl-summary').innerText = cleanSummary(data.summary_of_current_conditions.metro_manila_email);
+                            document.getElementById('dgt-summary').innerText = cleanSummary(data.summary_of_current_conditions.dumaguete_email);
+
+                            // Typhoon Detection (Improved Highlighting)
+                            const highLightStorm = (txt) => {
+                                if (!txt) return "";
+                                let formatted = txt;
+                                const keywords = ["Tropical Depression", "Tropical Storm", "Severe Tropical Storm", "Typhoon", "Super Typhoon", "Cyclone"];
+                                keywords.forEach(word => {
+                                    const regex = new RegExp(word, 'gi');
+                                    formatted = formatted.replace(regex, (match) => `<span class="text-red-600 font-black">${match}</span>`);
+                                });
+                                formatted = formatted.replace(/\(([^)]+)\)/g, '<span class="text-red-600 font-black">($1)</span>');
+                                return formatted;
+                            };
+
+                            const sysEffect = (data.summary_of_current_conditions?.system_in_effect || "").toLowerCase();
+                            const hasStormInSystem = sysEffect.includes("storm") || sysEffect.includes("typhoon") || sysEffect.includes("cyclone");
+
+                            const tyObj = (data.active_pagasa_advisories?.other_advisories || []).find(x => ((x.title || "") + (x.summary || "")).toLowerCase().match(/typhoon|cyclone|tropical storm/));
+
+                            const monTxt = document.getElementById('typhoon-text');
+                            const trackLink = document.getElementById('typhoon-track-link');
+                            const cardTitle = document.getElementById('typhoon-card-title');
+                            const cardIcon = document.getElementById('typhoon-card-icon');
+
+                            if (tyObj || hasStormInSystem) {
+                                const rawText = tyObj ? tyObj.title : data.summary_of_current_conditions.system_in_effect;
+                                monTxt.innerHTML = highLightStorm(rawText);
+                                monTxt.className = "text-[11px] font-bold text-slate-800 leading-tight";
+                                trackLink.classList.remove('hidden');
+                                if (cardTitle) cardTitle.innerText = "ACTIVE CYCLONE";
+                                if (cardIcon) cardIcon.className = "fa-solid fa-hurricane text-red-600 animate-pulse";
+                            } else {
+                                monTxt.innerText = "NO SYSTEMS IN PAR";
+                                monTxt.className = "text-[11px] font-black text-emerald-600 tracking-tighter italic font-black";
+                                trackLink.classList.add('hidden');
+                                if (cardTitle) cardTitle.innerText = "PAR Alert Channel";
+                                if (cardIcon) cardIcon.className = "fa-solid fa-hurricane text-slate-400";
+                            }
+
+                            // Impact
+                            const setImpact = (site, d) => {
+                                const st = getStyles(d.impact_level);
+                                const id = site === 'metro_manila' ? 'mnl' : 'dgt';
+                                document.getElementById(`${id}-impact-badge`).innerText = d.impact_level;
+                                document.getElementById(`${id}-impact-badge`).className = `${st.bg} ${st.text} px-2.5 py-1 rounded text-[8px] font-black uppercase shadow-sm`;
+                                const bar = document.getElementById(`${id}-impact-bar`);
+                                bar.className = `h-full ${st.bar} rounded-full transition-all duration-1000 shadow-sm`;
+                                setTimeout(() => bar.style.width = st.w, 100);
+                            };
+                            setImpact('metro_manila', data.site_impact_summary.metro_manila);
+                            setImpact('dumaguete', data.site_impact_summary.dumaguete);
+
+                            renderForecast('metro_manila');
+                            renderRecommendations('metro_manila');
+                            renderAlerts('Manila');
+                            document.getElementById('takeaways-list').innerHTML = data.key_takeaways.map(t => `<li class="flex gap-4 items-start"><i class="fa-solid fa-check-circle text-emerald-500 mt-0.5 shrink-0 text-[11px]"></i><span class="text-[11px] text-slate-500 font-medium leading-tight tracking-tight line-clamp-2">${t}</span></li>`).join('');
+
+                        } catch (e) { console.error("Parse Error", e); }
+                    })
+                    .withFailureHandler(function (err) {
+                        console.error("GAS Server Error", err);
+                    })
+                    .getData();
+            }
+
+            init();
+            // Theme Manager
+            function toggleTheme() {
+                document.documentElement.classList.toggle('dark');
+                const isDark = document.documentElement.classList.contains('dark');
+                localStorage.setItem('theme', isDark ? 'dark' : 'light');
+                updateThemeIcon(isDark);
+            }
+
+            function updateThemeIcon(isDark) {
+                const icon = document.getElementById('theme-icon');
+                if (isDark) {
+                    icon.classList.remove('fa-moon');
+                    icon.classList.add('fa-sun');
+                } else {
+                    icon.classList.remove('fa-sun');
+                    icon.classList.add('fa-moon');
+                }
+            }
+
+            // Init Theme
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+                setTimeout(() => updateThemeIcon(true), 100);
+            } else {
+                document.documentElement.classList.remove('dark');
+                setTimeout(() => updateThemeIcon(false), 100);
+            }
+        </script>
+</body>
+
+</html>
