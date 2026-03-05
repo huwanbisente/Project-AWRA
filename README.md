@@ -23,16 +23,51 @@ The project uses a **Hybrid Automation Architecture**, separating the cloud-base
 
 ## System Architecture
 
-The following diagram illustrates the complete system architecture and data flow:
+The following diagram illustrates the Project AWRA ETL pipeline and data flow:
 
-![System Architecture Diagram](assets/images/architecture_preview.png)
+```mermaid
+graph LR
+    %% Data Sources
+    subgraph "1. DATA COLLECTION"
+        PAGASA["PAGASA<br/>(Bulletins & PDFs)"]
+        Accu["AccuWeather API<br/>(Forecasts)"]
+        Windy["Windy Live<br/>(Satellite Maps)"]
+    end
+
+    %% Intelligence Layer
+    subgraph "2. INTELLIGENCE (n8n)"
+        Workflow["n8n Orchestrator"]
+        LLM["GenAI Analytics<br/>(Gemini/OpenAI)"]
+        Workflow <--> LLM
+    end
+
+    %% Local Processing
+    subgraph "3. PROCESSING (Python)"
+        Pipeline["run_pipeline.py"]
+        Render["Report Renderer<br/>(PDFGen)"]
+        Pipeline --> Render
+    end
+
+    %% Delivery / View
+    subgraph "4. DELIVERY & DASHBOARD"
+        Sheets[("Google Sheets<br/>(Central DB)")]
+        GAS["GAS Web App<br/>(Live UI)"]
+        Email["Email Dispatch<br/>(Daily Reports)"]
+    end
+
+    %% Connections
+    PAGASA & Accu & Windy --> Workflow
+    Workflow -->|JSON Payload| Pipeline
+    Pipeline -->|Sync Data| Sheets
+    Sheets --> GAS
+    Render --> Email
+```
 
 **Key Components:**
-- **n8n Workflow**: Cloud-based orchestrator handling PDF scraping and LLM-driven weather synthesis.
-- **Python Pipeline**: Multi-threaded local engine for data fetching and professional PDF rendering.
-- **Intelligence Engine**: Utilizes OpenAI/Gemini to transform technical bulletins into concise operational recommendations.
-- **Data Persistence**: Google Sheets acting as a centralized, real-time database for the web application.
-- **Web App Interface**: Google Apps Script (GAS) serving a modern, responsive weather monitoring dashboard.
+- **n8n Workflow**: Cloud orchestrator that scrapes technical bulletins and uses LLMs to synthesize weather "Key Takeaways."
+- **Python Execution Pipeline**: Multi-threaded local runner that retrieves maps, renders specialized charts, and compiles the final PDF.
+- **Google Sheets & GAS**: Acts as a lightweight, real-time database that powers the reactive glassmorphic dashboard.
+- **Automated Dispatch**: System handles simultaneous updates to the web dashboard and executive email lists.
 
 ---
 
